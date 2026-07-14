@@ -25,7 +25,19 @@ paid service or a feature that requires leaving the free tier.
 - **Node 22 required** (system default `node` is v10). Run:
   `export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"; nvm use 22.23.1`
 - `npm run dev` (uses `.env`; copy from `.env.example`)
-- `npm run db:push` / `db:studio` once a real `DATABASE_URL` is set
+- `npm run db:push` / `db:studio` / `db:seed` (DB is live on TiDB)
+
+## Auth (NextAuth v5 / Auth.js)
+- Uses **`AUTH_SECRET`** (not NEXTAUTH_SECRET) and **`trustHost: true`** in `auth.ts`
+  — both required, or login 500s (UntrustedHost) and route protection fails silently.
+- Single admin from `ADMIN_EMAIL` / `ADMIN_PASSWORD`. Login: `/admin/login`.
+  `/admin/*` protected by `app/admin/(protected)/layout.tsx`.
+
+## Uploads
+- Browser uploads DIRECTLY to Cloudinary via unsigned preset
+  `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` (avoids Vercel's serverless body limit).
+  Server actions in `app/admin/actions.ts` persist the returned URL + public_id.
+- Data reads: `lib/data.ts` (DB with static fallback). Public pages are force-dynamic.
 
 ## Theme
 Colors: white, cream, soft-pink, baby-blue, lavender (defined in `app/globals.css`).
