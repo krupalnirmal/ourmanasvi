@@ -142,6 +142,27 @@ export async function deleteVideo(id: string, publicId: string, monthNumber: num
   refresh(monthNumber);
 }
 
+/* ── Home hero background ────────────────────────────────── */
+export async function setHeroImage(formData: FormData) {
+  await requireAuth();
+  const imageUrl = String(formData.get("imageUrl") ?? "").trim();
+  if (!imageUrl) return;
+  const baby = await prisma.baby.findFirst();
+  if (!baby) return;
+  await prisma.baby.update({ where: { id: baby.id }, data: { coverImage: imageUrl } });
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
+
+export async function clearHeroImage() {
+  await requireAuth();
+  const baby = await prisma.baby.findFirst();
+  if (!baby) return;
+  await prisma.baby.update({ where: { id: baby.id }, data: { coverImage: null } });
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
+
 /* ── Family ─────────────────────────────────────────────── */
 function str(fd: FormData, k: string) {
   return String(fd.get(k) ?? "").trim();

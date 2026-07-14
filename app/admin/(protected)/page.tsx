@@ -1,16 +1,22 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { monthLabel } from "@/lib/months";
+import { banner } from "@/lib/cld";
+import { setHeroImage, clearHeroImage } from "@/app/admin/actions";
+import ImagePicker from "@/components/admin/ImagePicker";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboard() {
-  const months = await prisma.month.findMany({
-    orderBy: { monthNumber: "asc" },
-    include: {
-      _count: { select: { gallery: true, videos: true, memories: true, milestones: true } },
-    },
-  });
+  const [months, baby] = await Promise.all([
+    prisma.month.findMany({
+      orderBy: { monthNumber: "asc" },
+      include: {
+        _count: { select: { gallery: true, videos: true, memories: true, milestones: true } },
+      },
+    }),
+    prisma.baby.findFirst(),
+  ]);
 
   return (
     <div>
@@ -18,6 +24,42 @@ export default async function AdminDashboard() {
       <p className="mt-2 text-ink-soft">
         Pick a month to add photos, videos, memories and milestones.
       </p>
+
+      {/* Home hero background */}
+      <section className="mt-6 rounded-3xl bg-white/80 p-6 shadow-sm ring-1 ring-lavender/40">
+        <h2 className="font-display text-xl font-semibold text-ink">Home hero background</h2>
+        <p className="mt-1 text-sm text-ink-soft">
+          Choose the big photo behind the homepage title. Tip: turn on “Crop before upload”
+          and use a wide crop for the best fit. Leave it automatic to use your latest photo.
+        </p>
+        <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center">
+          <div className="h-24 w-40 shrink-0 overflow-hidden rounded-2xl bg-lavender/20 ring-1 ring-lavender/40">
+            {baby?.coverImage ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={banner(baby.coverImage)} alt="" className="h-full w-full object-cover object-[50%_15%]" />
+            ) : (
+              <span className="flex h-full w-full items-center justify-center text-xs text-ink-soft">
+                Automatic
+              </span>
+            )}
+          </div>
+          <div className="flex-1 space-y-3">
+            <form action={setHeroImage} className="space-y-2">
+              <ImagePicker />
+              <button className="rounded-full bg-soft-pink-deep px-5 py-2 text-sm font-semibold text-white">
+                Set as hero image
+              </button>
+            </form>
+            {baby?.coverImage && (
+              <form action={clearHeroImage}>
+                <button className="text-sm font-medium text-ink-soft underline hover:text-ink">
+                  Use latest photo automatically
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      </section>
 
       {/* Section shortcuts */}
       <div className="mt-6 flex flex-wrap gap-3">

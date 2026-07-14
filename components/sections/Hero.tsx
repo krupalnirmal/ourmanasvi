@@ -20,8 +20,10 @@ export default function Hero({
   photos?: string[];
   baby?: BabyInfo | null;
 }) {
-  const bg = photos[0];
-  const cluster = photos.slice(1, 4);
+  // Admin-chosen cover wins; otherwise fall back to the latest photo.
+  const bg = baby?.coverImage || photos[0];
+  // Avoid repeating the background photo in the polaroid cluster.
+  const cluster = baby?.coverImage ? photos.slice(0, 3) : photos.slice(1, 4);
   const dates =
     baby?.birthDate && baby?.firstBirthday
       ? `${fmt(baby.birthDate)}  —  ${fmt(baby.firstBirthday)}`
