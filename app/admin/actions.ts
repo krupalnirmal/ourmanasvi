@@ -141,3 +141,90 @@ export async function deleteVideo(id: string, publicId: string, monthNumber: num
   }
   refresh(monthNumber);
 }
+
+/* ── Family ─────────────────────────────────────────────── */
+function str(fd: FormData, k: string) {
+  return String(fd.get(k) ?? "").trim();
+}
+function dateOrNull(fd: FormData, k: string) {
+  const v = str(fd, k);
+  return v ? new Date(v) : null;
+}
+
+export async function addFamily(formData: FormData) {
+  await requireAuth();
+  const name = str(formData, "name");
+  const relation = str(formData, "relation");
+  if (!name || !relation) return;
+  await prisma.family.create({
+    data: {
+      name,
+      relation,
+      message: str(formData, "message") || null,
+      photoUrl: str(formData, "imageUrl") || null,
+      publicId: str(formData, "publicId") || null,
+    },
+  });
+  revalidatePath("/family");
+  revalidatePath("/admin/family");
+}
+
+export async function deleteFamily(id: string, publicId?: string) {
+  await requireAuth();
+  await prisma.family.delete({ where: { id } });
+  if (publicId) await deleteAsset(publicId, "image").catch(() => {});
+  revalidatePath("/family");
+  revalidatePath("/admin/family");
+}
+
+/* ── Places ─────────────────────────────────────────────── */
+export async function addPlace(formData: FormData) {
+  await requireAuth();
+  const name = str(formData, "name");
+  if (!name) return;
+  await prisma.place.create({
+    data: {
+      name,
+      description: str(formData, "description") || null,
+      date: dateOrNull(formData, "date"),
+      imageUrl: str(formData, "imageUrl") || null,
+      publicId: str(formData, "publicId") || null,
+    },
+  });
+  revalidatePath("/places");
+  revalidatePath("/admin/places");
+}
+
+export async function deletePlace(id: string, publicId?: string) {
+  await requireAuth();
+  await prisma.place.delete({ where: { id } });
+  if (publicId) await deleteAsset(publicId, "image").catch(() => {});
+  revalidatePath("/places");
+  revalidatePath("/admin/places");
+}
+
+/* ── Events (Festival model) ────────────────────────────── */
+export async function addEvent(formData: FormData) {
+  await requireAuth();
+  const name = str(formData, "name");
+  if (!name) return;
+  await prisma.festival.create({
+    data: {
+      name,
+      description: str(formData, "description") || null,
+      date: dateOrNull(formData, "date"),
+      imageUrl: str(formData, "imageUrl") || null,
+      publicId: str(formData, "publicId") || null,
+    },
+  });
+  revalidatePath("/events");
+  revalidatePath("/admin/events");
+}
+
+export async function deleteEvent(id: string, publicId?: string) {
+  await requireAuth();
+  await prisma.festival.delete({ where: { id } });
+  if (publicId) await deleteAsset(publicId, "image").catch(() => {});
+  revalidatePath("/events");
+  revalidatePath("/admin/events");
+}

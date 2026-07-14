@@ -19,6 +19,23 @@ export default async function AdminDashboard() {
         Pick a month to add photos, videos, memories and milestones.
       </p>
 
+      {/* Section shortcuts */}
+      <div className="mt-6 flex flex-wrap gap-3">
+        {[
+          { href: "/admin/family", label: "👪 Family" },
+          { href: "/admin/places", label: "📍 Places & Villages" },
+          { href: "/admin/events", label: "🎉 Events & Photoshoots" },
+        ].map((s) => (
+          <Link
+            key={s.href}
+            href={s.href}
+            className="rounded-full bg-white/80 px-5 py-2 text-sm font-medium text-ink shadow-sm ring-1 ring-lavender/40 transition-all hover:-translate-y-0.5 hover:shadow-md"
+          >
+            {s.label}
+          </Link>
+        ))}
+      </div>
+
       {months.length === 0 && (
         <p className="mt-8 rounded-2xl bg-soft-pink/30 p-6 text-ink-soft">
           No months found. Run <code className="font-mono">npm run db:seed</code> to create them.
