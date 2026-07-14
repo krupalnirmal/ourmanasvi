@@ -115,20 +115,67 @@ export async function getMonthView(n: number): Promise<MonthView | undefined> {
   }
 }
 
-/** A few real photos to feature on the homepage hero (empty if none uploaded). */
-export async function getFeaturedPhotos(limit = 5): Promise<string[]> {
+export interface BabyInfo {
+  name: string;
+  tagline?: string;
+  birthDate?: string;
+  firstBirthday?: string;
+}
+
+export async function getBaby(): Promise<BabyInfo | null> {
+  try {
+    const baby = await prisma.baby.findFirst();
+    if (!baby) return null;
+    return {
+      name: baby.name,
+      tagline: baby.tagline ?? undefined,
+      birthDate: baby.birthDate?.toISOString() ?? undefined,
+      firstBirthday: baby.firstBirthday?.toISOString() ?? undefined,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export interface Stats {
+  months: number;
+  photos: number;
+  videos: number;
+  memories: number;
+}
+
+export async function getStats(): Promise<Stats> {
+  try {
+    const [months, photos, videos, memories] = await Promise.all([
+      prisma.month.count(),
+      prisma.gallery.count(),
+      prisma.video.count(),
+      prisma.memory.count(),
+    ]);
+    return { months, photos, videos, memories };
+  } catch {
+    return { months: 13, photos: 0, videos: 0, memories: 0 };
+  }
+}
+
+export interface FeaturedMoment {
+  imageUrl: string;
+  monthNumber: number;
+}
+
+/** Real photos to feature on the homepage (spread across months). */
+export async function getFeaturedMoments(limit = 8): Promise<FeaturedMoment[]> {
   try {
     const photos = await prisma.gallery.findMany({
       orderBy: { createdAt: "desc" },
-      select: { imageUrl: true },
-      take: 40,
+      select: { imageUrl: true, month: { select: { monthNumber: true } } },
+      take: 60,
     });
     if (photos.length === 0) return [];
-    // Spread the picks across the set so they're varied, not all from one month.
     const step = Math.max(1, Math.floor(photos.length / limit));
-    const picked: string[] = [];
+    const picked: FeaturedMoment[] = [];
     for (let i = 0; i < photos.length && picked.length < limit; i += step) {
-      picked.push(photos[i].imageUrl);
+      picked.push({ imageUrl: photos[i].imageUrl, monthNumber: photos[i].month.monthNumber });
     }
     return picked;
   } catch {
