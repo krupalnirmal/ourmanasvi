@@ -1,50 +1,54 @@
 "use client";
 
 import { useRef, useState } from "react";
-
-const CLOUD = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-const PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+import { cloudinaryUpload } from "@/lib/upload-client";
+import CropModal from "./CropModal";
 
 /**
- * Uploads an image directly to Cloudinary and stores the result in hidden
- * inputs (imageUrl / publicId) so a plain <form> server action receives them
- * alongside the text fields.
+ * Single-image picker (with optional crop) that stores the uploaded result in
+ * hidden inputs (imageUrl / publicId) for a plain <form> server action.
  */
 export default function ImagePicker() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [url, setUrl] = useState("");
   const [publicId, setPublicId] = useState("");
+  const [crop, setCrop] = useState(false);
+  const [activeSrc, setActiveSrc] = useState<string | null>(null);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [progress, setProgress] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  function upload(file: File) {
+  async function upload(blob: Blob, name: string) {
     setError(null);
     setProgress(0);
-    const form = new FormData();
-    form.append("file", file);
-    form.append("upload_preset", PRESET as string);
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`);
-    xhr.upload.onprogress = (e) => {
-      if (e.lengthComputable) setProgress(Math.round((e.loaded / e.total) * 100));
-    };
-    xhr.onload = () => {
-      try {
-        if (xhr.status < 200 || xhr.status >= 300) throw new Error(`Upload failed (${xhr.status})`);
-        const res = JSON.parse(xhr.responseText);
-        setUrl(res.secure_url);
-        setPublicId(res.public_id);
-        setProgress(null);
-      } catch (e) {
-        setError(e instanceof Error ? e.message : "Upload error");
-        setProgress(null);
-      }
-    };
-    xhr.onerror = () => {
-      setError("Network error");
+    try {
+      const res = await cloudinaryUpload(blob, "image", setProgress, name);
+      setUrl(res.secure_url);
+      setPublicId(res.public_id);
       setProgress(null);
-    };
-    xhr.send(form);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Upload error");
+      setProgress(null);
+    }
+  }
+
+  function onSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (crop) {
+      setPendingFile(file);
+      setActiveSrc(URL.createObjectURL(file));
+    } else {
+      upload(file, file.name);
+    }
+  }
+
+  function finishCrop(blob: Blob | null) {
+    if (activeSrc) URL.revokeObjectURL(activeSrc);
+    setActiveSrc(null);
+    const file = pendingFile;
+    setPendingFile(null);
+    if (file) upload(blob ?? file, file.name);
   }
 
   const busy = progress !== null;
@@ -53,6 +57,7 @@ export default function ImagePicker() {
     <div>
       <input type="hidden" name="imageUrl" value={url} />
       <input type="hidden" name="publicId" value={publicId} />
+
       <div className="flex items-center gap-3">
         {url ? (
           /* eslint-disable-next-line @next/next/no-img-element */
@@ -68,16 +73,36 @@ export default function ImagePicker() {
             type="file"
             accept="image/*"
             disabled={busy}
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) upload(f);
-            }}
+            onChange={onSelect}
             className="block w-full text-sm text-ink-soft file:mr-3 file:rounded-full file:border-0 file:bg-soft-pink-deep file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-white hover:file:opacity-90"
           />
+          <label className="mt-1.5 flex items-center gap-2 text-xs text-ink-soft">
+            <input
+              type="checkbox"
+              checked={crop}
+              onChange={(e) => setCrop(e.target.checked)}
+              disabled={busy}
+              className="h-3.5 w-3.5 accent-soft-pink-deep"
+            />
+            Crop before upload
+          </label>
           {busy && <p className="mt-1 text-xs text-ink-soft">Uploading… {progress}%</p>}
           {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
         </div>
       </div>
+
+      {activeSrc && (
+        <CropModal
+          src={activeSrc}
+          onDone={(blob) => finishCrop(blob)}
+          onSkip={() => finishCrop(null)}
+          onCancel={() => {
+            if (activeSrc) URL.revokeObjectURL(activeSrc);
+            setActiveSrc(null);
+            setPendingFile(null);
+          }}
+        />
+      )}
     </div>
   );
 }
