@@ -40,7 +40,15 @@ export default function Hero({
             className="h-full w-full object-cover object-[50%_15%]"
           />
           {/* Top stays clear (face visible); cream builds toward the bottom for legible text */}
-          <div className="absolute inset-0 bg-gradient-to-b from-cream/0 via-cream/45 to-cream" />
+          <div className="absolute inset-0 bg-gradient-to-b from-cream/0 via-cream/70 to-cream" />
+          {/* Extra cream glow right where the text sits */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(ellipse 80% 45% at 50% 68%, rgba(255,248,240,0.8), rgba(255,248,240,0) 72%)",
+            }}
+          />
         </div>
       )}
       <div className="pointer-events-none absolute inset-0 -z-10">
@@ -64,8 +72,8 @@ export default function Hero({
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.35 }}
-          style={{ textShadow: "0 1px 12px rgba(255,248,240,0.95)" }}
-          className="mt-4 font-hand text-2xl text-soft-pink-deep sm:text-3xl"
+          style={{ textShadow: "0 1px 10px rgba(255,248,240,1)" }}
+          className="mt-4 font-hand text-2xl font-semibold text-rose-deep sm:text-3xl"
         >
           {dates}
         </motion.p>
