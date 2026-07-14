@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { cloudinaryUpload } from "@/lib/upload-client";
+import { cloudinaryUpload, prepareImage } from "@/lib/upload-client";
 import CropModal from "./CropModal";
 
 /**
@@ -22,7 +22,8 @@ export default function ImagePicker() {
     setError(null);
     setProgress(0);
     try {
-      const res = await cloudinaryUpload(blob, "image", setProgress, name);
+      const payload = await prepareImage(blob);
+      const res = await cloudinaryUpload(payload, "image", setProgress, name);
       setUrl(res.secure_url);
       setPublicId(res.public_id);
       setProgress(null);

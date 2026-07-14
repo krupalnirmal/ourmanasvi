@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { saveGalleryPhoto, saveVideo } from "@/app/admin/actions";
-import { cloudinaryUpload } from "@/lib/upload-client";
+import { cloudinaryUpload, prepareImage } from "@/lib/upload-client";
 import CropModal from "./CropModal";
 
 const CLOUD = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
@@ -68,7 +68,8 @@ export default function Uploader({
       for (let i = 0; i < files.length; i++) {
         setStatus(`Uploading ${i + 1}/${files.length}`);
         setPct(0);
-        const res = await cloudinaryUpload(files[i], kind, setPct, files[i].name);
+        const payload = kind === "image" ? await prepareImage(files[i]) : files[i];
+        const res = await cloudinaryUpload(payload, kind, setPct, files[i].name);
         await persist(res);
       }
       reset();
@@ -103,7 +104,8 @@ export default function Uploader({
     setStatus(`Uploading ${idx}/${total}`);
     setPct(0);
     try {
-      const res = await cloudinaryUpload(blob ?? current, "image", setPct, current.name);
+      const payload = await prepareImage(blob ?? current);
+      const res = await cloudinaryUpload(payload, "image", setPct, current.name);
       await persist(res);
       const rest = files.slice(1);
       if (rest.length) {
