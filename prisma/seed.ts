@@ -14,8 +14,8 @@ async function main() {
       id: "manasvi",
       name: "Manasvi",
       tagline: "A year of firsts, from birth to first birthday.",
-      birthDate: new Date("2025-01-01"),
-      firstBirthday: new Date("2026-01-01"),
+      birthDate: new Date("2025-07-14"),
+      firstBirthday: new Date("2026-07-14"),
     },
   });
   console.log(`👶 Baby ready: ${baby.name}`);

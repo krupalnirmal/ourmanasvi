@@ -31,20 +31,19 @@ export default function Hero({
       : "Birth to First Birthday";
 
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 py-24">
-      {/* Photo background */}
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 pb-20 pt-[44vh] sm:pt-[38vh]">
+      {/* Photo background — subject kept high so content sits below the face */}
       {bg && (
         <div className="pointer-events-none absolute inset-0 -z-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={banner(bg)} alt="" aria-hidden className="h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-cream/30 via-cream/25 to-cream" />
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(ellipse 55% 50% at 50% 40%, rgba(255,248,240,0.88), rgba(255,248,240,0) 70%)",
-            }}
+          <img
+            src={banner(bg)}
+            alt=""
+            aria-hidden
+            className="h-full w-full object-cover object-[50%_15%]"
           />
+          {/* Top stays clear (face visible); cream builds toward the bottom for legible text */}
+          <div className="absolute inset-0 bg-gradient-to-b from-cream/0 via-cream/45 to-cream" />
         </div>
       )}
       <div className="pointer-events-none absolute inset-0 -z-10">
