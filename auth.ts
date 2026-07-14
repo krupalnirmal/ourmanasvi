@@ -4,6 +4,9 @@ import Credentials from "next-auth/providers/credentials";
 // Single-admin auth (the parents). Credentials are checked against env vars,
 // so there is no user table and nothing paid involved — fully free.
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  // Trust the request host (needed for self-hosted / `next start` / any non-Vercel host).
+  trustHost: true,
+  secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
   session: { strategy: "jwt" },
   pages: { signIn: "/admin/login" },
   providers: [

@@ -1,18 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { MONTHS, getMonth } from "@/lib/journey-data";
+import { getMonthView, getMonthNumbers } from "@/lib/data";
 import { monthLabel, ACCENT_CLASSES } from "@/lib/months";
 import Header from "@/components/sections/Header";
 import Footer from "@/components/sections/Footer";
 import Gallery from "@/components/ui/Gallery";
+import VideoPlayer from "@/components/ui/VideoPlayer";
 import MemoryCard from "@/components/ui/MemoryCard";
 import MilestoneCard from "@/components/ui/MilestoneCard";
 
-// Pre-render every month page at build time (static, fast, free).
-export function generateStaticParams() {
-  return MONTHS.map((m) => ({ monthNumber: String(m.monthNumber) }));
-}
+// Reflect admin edits / new uploads immediately.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -20,12 +19,9 @@ export async function generateMetadata({
   params: Promise<{ monthNumber: string }>;
 }): Promise<Metadata> {
   const { monthNumber } = await params;
-  const month = getMonth(Number(monthNumber));
+  const month = await getMonthView(Number(monthNumber));
   if (!month) return { title: "OurManasvi" };
-  return {
-    title: `${month.title} — OurManasvi`,
-    description: month.intro,
-  };
+  return { title: `${month.title} — OurManasvi`, description: month.intro };
 }
 
 export default async function MonthPage({
@@ -35,12 +31,20 @@ export default async function MonthPage({
 }) {
   const { monthNumber } = await params;
   const n = Number(monthNumber);
-  const month = getMonth(n);
+  if (Number.isNaN(n)) notFound();
+
+  const month = await getMonthView(n);
   if (!month) notFound();
 
   const accent = ACCENT_CLASSES[month.accent];
-  const prev = getMonth(n - 1);
-  const next = getMonth(n + 1);
+  const numbers = await getMonthNumbers();
+  const idx = numbers.indexOf(n);
+  const prevN = idx > 0 ? numbers[idx - 1] : undefined;
+  const nextN = idx >= 0 && idx < numbers.length - 1 ? numbers[idx + 1] : undefined;
+  const [prev, next] = await Promise.all([
+    prevN !== undefined ? getMonthView(prevN) : Promise.resolve(undefined),
+    nextN !== undefined ? getMonthView(nextN) : Promise.resolve(undefined),
+  ]);
 
   return (
     <>
@@ -64,7 +68,9 @@ export default async function MonthPage({
             {month.subtitle && (
               <p className="mt-3 text-lg text-ink-soft">{month.subtitle}</p>
             )}
-            <p className="mx-auto mt-6 max-w-xl text-ink-soft">{month.intro}</p>
+            {month.intro && (
+              <p className="mx-auto mt-6 max-w-xl text-ink-soft">{month.intro}</p>
+            )}
           </div>
         </section>
 
@@ -75,6 +81,22 @@ export default async function MonthPage({
           </h2>
           <Gallery photos={month.gallery} accent={month.accent} />
         </section>
+
+        {/* Videos */}
+        {month.videos.length > 0 && (
+          <section id="videos" className="bg-lavender/20 px-6 py-16">
+            <div className="mx-auto max-w-4xl">
+              <h2 className="mb-8 text-center font-display text-3xl font-semibold text-ink">
+                Videos
+              </h2>
+              <div className="grid gap-6 sm:grid-cols-2">
+                {month.videos.map((v, i) => (
+                  <VideoPlayer key={i} video={v} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Memories */}
         {month.memories.length > 0 && (
