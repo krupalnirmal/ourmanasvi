@@ -4,9 +4,6 @@ import { motion } from "framer-motion";
 import { cld, banner } from "@/lib/cld";
 import type { BabyInfo } from "@/lib/data";
 
-const LOGO =
-  "https://res.cloudinary.com/dt1zpdsy1/image/upload/v1784023832/ourmanasvi/logo.png";
-
 function fmt(d?: string) {
   if (!d) return "";
   return new Date(d).toLocaleDateString("en-GB", {
@@ -31,7 +28,7 @@ export default function Hero({
       : "Birth to First Birthday";
 
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 pb-20 pt-[44vh] sm:pt-[38vh]">
+    <section className="relative flex min-h-[82vh] flex-col items-center justify-end overflow-hidden px-6 pb-12 pt-24 text-center sm:min-h-[86vh]">
       {/* Photo background — subject kept high so content sits below the face */}
       {bg && (
         <div className="pointer-events-none absolute inset-0 -z-10">
@@ -53,20 +50,15 @@ export default function Hero({
       </div>
 
       <div className="max-w-3xl text-center">
-        {/* Big logo as the centrepiece */}
-        <motion.div
-          initial={{ opacity: 0, y: -10, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
+        <motion.h1
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="flex justify-center"
+          style={{ textShadow: "0 2px 18px rgba(255,248,240,0.95)" }}
+          className="font-display text-4xl font-semibold leading-tight text-ink sm:text-6xl"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={cld(LOGO, "h_520,c_limit,q_auto,f_auto")}
-            alt="OurManasvi — A Year of Firsts"
-            className="h-40 w-auto drop-shadow-sm sm:h-56"
-          />
-        </motion.div>
+          A Year of Firsts
+        </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 12 }}
@@ -90,7 +82,7 @@ export default function Hero({
         </motion.p>
 
         {cluster.length > 0 && (
-          <div className="mt-9 flex items-end justify-center gap-3 sm:gap-5">
+          <div className="mt-6 flex items-end justify-center gap-3 sm:gap-5">
             {cluster.map((url, i) => (
               <motion.div
                 key={url}
@@ -117,7 +109,7 @@ export default function Hero({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.65 }}
-          className="mt-9 flex items-center justify-center gap-4"
+          className="mt-7 flex items-center justify-center gap-4"
         >
           <a
             href="#timeline"
@@ -127,16 +119,6 @@ export default function Hero({
           </a>
         </motion.div>
       </div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, y: [0, 10, 0] }}
-        transition={{ delay: 1, duration: 2, repeat: Infinity }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-2xl text-ink-soft"
-        aria-hidden
-      >
-        ↓
-      </motion.div>
     </section>
   );
 }
