@@ -2,10 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { cld } from "@/lib/cld";
-
-const LOGO =
-  "https://res.cloudinary.com/dt1zpdsy1/image/upload/v1784023832/ourmanasvi/logo.png";
 
 const NAV = [
   { href: "/#timeline", label: "Journey" },
@@ -53,14 +49,13 @@ export default function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-lavender/40 bg-cream/90 backdrop-blur-md">
       <nav className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-2.5 sm:px-6">
-        {/* Logo */}
-        <Link href="/" className="group shrink-0" onClick={() => setOpen(false)}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={cld(LOGO, "h_110,c_limit,q_auto,f_auto")}
-            alt="OurManasvi"
-            className="h-10 w-auto transition-transform duration-300 group-hover:scale-105 sm:h-11"
-          />
+        {/* Logo — simple handwritten wordmark */}
+        <Link
+          href="/"
+          onClick={() => setOpen(false)}
+          className="shrink-0 font-hand text-3xl font-bold leading-none tracking-tight text-ink transition-transform duration-300 hover:scale-105 sm:text-4xl"
+        >
+          Manasvi
         </Link>
 
         {/* Search (desktop) */}
