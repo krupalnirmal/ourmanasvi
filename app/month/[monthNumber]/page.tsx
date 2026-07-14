@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import { getMonthView, getMonthNumbers } from "@/lib/data";
 import { monthLabel, ACCENT_CLASSES } from "@/lib/months";
 import { banner } from "@/lib/cld";
-import Header from "@/components/sections/Header";
 import Footer from "@/components/sections/Footer";
 import Gallery from "@/components/ui/Gallery";
 import VideoPlayer from "@/components/ui/VideoPlayer";
@@ -50,7 +49,6 @@ export default async function MonthPage({
 
   return (
     <>
-      <Header />
       <main className="flex-1">
         {/* Hero — real cover photo when available, else pastel */}
         <section
