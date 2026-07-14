@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import type { TimelineItem } from "@/types";
-import { ACCENT_CLASSES } from "@/lib/months";
+import { ACCENT_CLASSES, monthLabel } from "@/lib/months";
 
 export default function MonthCard({
   item,
@@ -24,23 +25,23 @@ export default function MonthCard({
         alignLeft ? "md:self-start md:pr-12" : "md:self-end md:pl-12"
       }`}
     >
-      <div
+      <Link
+        href={`/month/${item.monthNumber}`}
         className={`group w-full rounded-3xl ${accent.bg} p-6 shadow-sm ring-1 ${accent.ring}/40 transition-all hover:-translate-y-1 hover:shadow-xl`}
       >
         <span className="font-hand text-2xl text-ink-soft">
-          {item.monthNumber === 0
-            ? "Day one"
-            : item.monthNumber === 12
-              ? "One year"
-              : `Month ${item.monthNumber}`}
+          {monthLabel(item.monthNumber)}
         </span>
         <h3 className="mt-1 font-display text-2xl font-semibold text-ink">
           {item.title}
         </h3>
-        {item.subtitle && (
-          <p className="mt-2 text-ink-soft">{item.subtitle}</p>
-        )}
-      </div>
+        {item.subtitle && <p className="mt-2 text-ink-soft">{item.subtitle}</p>}
+        <span
+          className={`mt-4 inline-flex items-center gap-1 text-sm font-medium ${accent.text} opacity-0 transition-opacity group-hover:opacity-100`}
+        >
+          Open this month →
+        </span>
+      </Link>
     </motion.div>
   );
 }

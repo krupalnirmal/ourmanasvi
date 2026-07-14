@@ -4,10 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 const LINKS = [
-  { href: "#timeline", label: "Timeline" },
-  { href: "#gallery", label: "Gallery" },
-  { href: "#memories", label: "Memories" },
-  { href: "#milestones", label: "Milestones" },
+  { href: "/", label: "Home" },
+  { href: "/#timeline", label: "Timeline" },
 ];
 
 export default function Header() {
