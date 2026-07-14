@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { Poppins, Playfair_Display, Caveat } from "next/font/google";
 import "./globals.css";
 import PWARegister from "@/components/PWARegister";
+import TopProgress from "@/components/TopProgress";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -61,6 +63,9 @@ export default function RootLayout({
       className={`${poppins.variable} ${playfair.variable} ${caveat.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[var(--background)] text-ink">
+        <Suspense fallback={null}>
+          <TopProgress />
+        </Suspense>
         {children}
         <PWARegister />
       </body>
