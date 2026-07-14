@@ -9,20 +9,29 @@ export default function Hero({ photos = [] }: { photos?: string[] }) {
 
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-6">
-      {/* Soft photo wash (kept light to preserve the airy, premium feel) */}
+      {/* Photo background — kept clearly visible, with just enough wash for text */}
       {bg && (
         <div className="pointer-events-none absolute inset-0 -z-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={banner(bg)} alt="" aria-hidden className="h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-cream/85 via-cream/70 to-cream" />
+          {/* Light top-to-bottom wash: photo shows through, bottom anchors to cream */}
+          <div className="absolute inset-0 bg-gradient-to-b from-cream/30 via-cream/25 to-cream" />
+          {/* Soft glow behind the headline so dark text stays legible */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(ellipse 55% 45% at 50% 42%, rgba(255,248,240,0.85), rgba(255,248,240,0) 70%)",
+            }}
+          />
         </div>
       )}
 
-      {/* Dreamy pastel blobs */}
+      {/* Dreamy pastel blobs (subtler over a photo) */}
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -left-24 top-10 h-80 w-80 rounded-full bg-soft-pink/40 blur-3xl" />
-        <div className="absolute right-0 top-1/3 h-96 w-96 rounded-full bg-baby-blue/40 blur-3xl" />
-        <div className="absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-lavender/50 blur-3xl" />
+        <div className={`absolute -left-24 top-10 h-80 w-80 rounded-full bg-soft-pink/30 blur-3xl ${bg ? "opacity-60" : ""}`} />
+        <div className={`absolute right-0 top-1/3 h-96 w-96 rounded-full bg-baby-blue/30 blur-3xl ${bg ? "opacity-60" : ""}`} />
+        <div className={`absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-lavender/40 blur-3xl ${bg ? "opacity-60" : ""}`} />
       </div>
 
       <div className="max-w-3xl text-center">
@@ -39,6 +48,7 @@ export default function Hero({ photos = [] }: { photos?: string[] }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.35 }}
+          style={{ textShadow: "0 2px 18px rgba(255,248,240,0.95)" }}
           className="mt-3 font-display text-5xl font-semibold leading-tight text-ink sm:text-7xl"
         >
           A Year of Firsts
@@ -48,6 +58,7 @@ export default function Hero({ photos = [] }: { photos?: string[] }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
+          style={{ textShadow: "0 1px 12px rgba(255,248,240,0.95)" }}
           className="mx-auto mt-6 max-w-xl text-lg text-ink-soft"
         >
           Every giggle, every tiny milestone, every unforgettable moment of
