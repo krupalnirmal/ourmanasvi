@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { cld } from "@/lib/cld";
+
+const LOGO =
+  "https://res.cloudinary.com/dt1zpdsy1/image/upload/v1784023832/ourmanasvi/logo.png";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -19,32 +23,14 @@ export default function Header() {
         scrolled ? "bg-cream/80 shadow-sm backdrop-blur-md" : "bg-transparent"
       }`}
     >
-      <nav className="mx-auto flex max-w-6xl items-center px-6 py-3.5">
-        <Link href="/" className="group flex items-center gap-3">
-          {/* Emblem — gradient heart badge (visible on any background) */}
-          <span
-            className="flex h-10 w-10 items-center justify-center rounded-2xl text-lg text-white shadow-md ring-1 ring-white/40 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3"
-            style={{
-              background:
-                "linear-gradient(135deg, var(--color-soft-pink-deep), var(--color-lavender-deep))",
-            }}
-            aria-hidden
-          >
-            ♥
-          </span>
-
-          {/* Wordmark + tiny tagline */}
-          <span
-            className="flex flex-col leading-none"
-            style={{ textShadow: "0 1px 10px rgba(255,248,240,0.7)" }}
-          >
-            <span className="font-display text-xl font-semibold tracking-tight text-ink">
-              Our<span className="text-soft-pink-deep">Manasvi</span>
-            </span>
-            <span className="mt-0.5 font-hand text-base leading-none text-ink-soft">
-              a year of firsts
-            </span>
-          </span>
+      <nav className="mx-auto flex max-w-6xl items-center px-6 py-2.5">
+        <Link href="/" className="group inline-flex items-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={cld(LOGO, "h_160,c_limit,q_auto,f_auto")}
+            alt="OurManasvi — A Year of Firsts"
+            className="h-14 w-auto drop-shadow-sm transition-transform duration-300 group-hover:scale-105 sm:h-16"
+          />
         </Link>
       </nav>
     </header>
