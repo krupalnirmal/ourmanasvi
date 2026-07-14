@@ -13,8 +13,8 @@ export default async function SiteLayout({
   const baby = await getBaby();
   return (
     <>
-      <CountdownBanner firstBirthday={baby?.firstBirthday} />
       <SiteHeader />
+      <CountdownBanner firstBirthday={baby?.firstBirthday} />
       {children}
       <Footer />
     </>
