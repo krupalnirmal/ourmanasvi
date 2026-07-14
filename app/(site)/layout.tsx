@@ -1,6 +1,7 @@
 import CountdownBanner from "@/components/sections/CountdownBanner";
 import SiteHeader from "@/components/sections/SiteHeader";
 import Footer from "@/components/sections/Footer";
+import InstallButton from "@/components/InstallButton";
 import { getBaby } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
@@ -17,6 +18,7 @@ export default async function SiteLayout({
       <CountdownBanner firstBirthday={baby?.firstBirthday} />
       {children}
       <Footer />
+      <InstallButton />
     </>
   );
 }

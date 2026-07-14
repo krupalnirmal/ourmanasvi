@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Poppins, Playfair_Display, Caveat } from "next/font/google";
 import "./globals.css";
+import PWARegister from "@/components/PWARegister";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -33,6 +34,20 @@ export const metadata: Metadata = {
     description: "Manasvi's first year, told month by month.",
     type: "website",
   },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Manasvi",
+  },
+  icons: {
+    icon: "/icons/icon-192.png",
+    apple: "/icons/apple-touch-icon.png",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#f2a7b8",
 };
 
 export default function RootLayout({
@@ -47,6 +62,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-[var(--background)] text-ink">
         {children}
+        <PWARegister />
       </body>
     </html>
   );
