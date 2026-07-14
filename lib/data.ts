@@ -183,6 +183,72 @@ export async function getFeaturedMoments(limit = 8): Promise<FeaturedMoment[]> {
   }
 }
 
+export interface FamilyMember {
+  id: string;
+  name: string;
+  relation: string;
+  photoUrl?: string;
+  message?: string;
+}
+export async function getFamily(): Promise<FamilyMember[]> {
+  try {
+    const rows = await prisma.family.findMany({ orderBy: { sortOrder: "asc" } });
+    return rows.map((r) => ({
+      id: r.id,
+      name: r.name,
+      relation: r.relation,
+      photoUrl: r.photoUrl ?? undefined,
+      message: r.message ?? undefined,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export interface PlaceItem {
+  id: string;
+  name: string;
+  description?: string;
+  date?: string;
+  imageUrl?: string;
+}
+export async function getPlaces(): Promise<PlaceItem[]> {
+  try {
+    const rows = await prisma.place.findMany({ orderBy: { createdAt: "asc" } });
+    return rows.map((r) => ({
+      id: r.id,
+      name: r.name,
+      description: r.description ?? undefined,
+      date: r.date?.toISOString() ?? undefined,
+      imageUrl: r.imageUrl ?? undefined,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export interface EventItem {
+  id: string;
+  name: string;
+  description?: string;
+  date?: string;
+  imageUrl?: string;
+}
+export async function getEvents(): Promise<EventItem[]> {
+  try {
+    const rows = await prisma.festival.findMany({ orderBy: { createdAt: "asc" } });
+    return rows.map((r) => ({
+      id: r.id,
+      name: r.name,
+      description: r.description ?? undefined,
+      date: r.date?.toISOString() ?? undefined,
+      imageUrl: r.imageUrl ?? undefined,
+    }));
+  } catch {
+    return [];
+  }
+}
+
 /** All month numbers that exist (for nav / listings). */
 export async function getMonthNumbers(): Promise<number[]> {
   try {

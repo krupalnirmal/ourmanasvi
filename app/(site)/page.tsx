@@ -3,7 +3,6 @@ import Hero from "@/components/sections/Hero";
 import StatsBand from "@/components/sections/StatsBand";
 import FeaturedMoments from "@/components/sections/FeaturedMoments";
 import Timeline from "@/components/sections/Timeline";
-import Footer from "@/components/sections/Footer";
 import {
   getTimeline,
   getFeaturedMoments,
@@ -31,7 +30,6 @@ export default async function Home() {
         <FeaturedMoments moments={featured} />
         <Timeline items={timeline} />
       </main>
-      <Footer />
     </>
   );
 }
