@@ -1,0 +1,6 @@
+FOLDER STRUCTURE
+
+app/ components/ lib/ hooks/ services/ api/ types/ utils/ public/
+styles/
+
+Keep reusable code separated. Use TypeScript.

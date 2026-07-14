@@ -1,0 +1,14 @@
+PRODUCT REQUIREMENTS DOCUMENT (PRD)
+
+Project Name: OurManasvi
+
+Vision: Create a premium digital memory book for Manasvi’s first year
+(Birth to First Birthday).
+
+Primary Goal: - Emotional storytelling - Month-wise journey - Beautiful
+UI - Fast and responsive - 100% free infrastructure
+
+Users: 1. Parents (Admin) 2. Family & Friends (Visitors)
+
+Core Features: - Timeline - Month pages - Gallery - Videos - Memory
+journal - Milestones - Birthday finale - Parents’ letter

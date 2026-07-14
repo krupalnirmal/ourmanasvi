@@ -1,0 +1,14 @@
+API SPECIFICATION
+
+Authentication - Login - Logout
+
+Months - GET /months - POST /months - PUT /months/:id - DELETE
+/months/:id
+
+Gallery - Upload Image - Delete Image
+
+Videos - Upload Video
+
+Memories - CRUD
+
+Milestones - CRUD

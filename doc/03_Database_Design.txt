@@ -1,0 +1,7 @@
+DATABASE DESIGN
+
+Tables: - babies - months - gallery - videos - memories - milestones -
+family - places - festivals
+
+Relationships: One Month -> Many Photos One Month -> Many Videos One
+Month -> Many Memories One Month -> Many Milestones

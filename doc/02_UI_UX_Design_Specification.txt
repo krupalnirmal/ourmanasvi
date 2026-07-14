@@ -1,0 +1,13 @@
+UI/UX DESIGN SPECIFICATION
+
+Theme: Minimal, Elegant, Emotional
+
+Colors: - White - Cream - Soft Pink - Baby Blue - Lavender
+
+Fonts: - Poppins - Playfair Display - Caveat
+
+Animations: - Fade - Slide - Zoom - Smooth Scroll
+
+Inspiration: - Apple - Google Photos - Premium Scrapbook
+
+Responsive: Desktop, Tablet, Mobile

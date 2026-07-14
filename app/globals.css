@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+/*
+  OurManasvi theme — Minimal, Elegant, Emotional
+  Palette: White · Cream · Soft Pink · Baby Blue · Lavender
+  Fonts:   Poppins (body) · Playfair Display (headings) · Caveat (handwriting)
+*/
+@theme {
+  --color-cream: #fff8f0;
+  --color-cream-deep: #fbeee0;
+  --color-soft-pink: #f9c9d4;
+  --color-soft-pink-deep: #f2a7b8;
+  --color-baby-blue: #c6e4f2;
+  --color-baby-blue-deep: #9ccde6;
+  --color-lavender: #e4dbf7;
+  --color-lavender-deep: #c7b8ee;
+  --color-ink: #3f3a44;
+  --color-ink-soft: #6b6572;
+
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-playfair), ui-serif, Georgia, serif;
+  --font-hand: var(--font-caveat), ui-serif, cursive;
+}
+
+:root {
+  --background: #fffdfb;
+  --foreground: #3f3a44;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Soft dreamy scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-cream);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-lavender-deep);
+  border-radius: 999px;
+}

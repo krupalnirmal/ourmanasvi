@@ -1,0 +1,13 @@
+DEPLOYMENT GUIDE
+
+Hosting: Vercel Hobby
+
+Database: TiDB Cloud Starter
+
+Media: Cloudinary Free
+
+Environment Variables: - DATABASE_URL - CLOUDINARY_CLOUD_NAME -
+CLOUDINARY_API_KEY - CLOUDINARY_API_SECRET - NEXTAUTH_SECRET
+
+Deployment Steps: 1. Push GitHub 2. Connect Vercel 3. Configure
+Environment Variables 4. Deploy 5. Test Production

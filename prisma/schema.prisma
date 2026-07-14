@@ -1,0 +1,137 @@
+// OurManasvi — Database schema
+// Provider: MySQL (TiDB Cloud Starter is MySQL-compatible, free tier)
+// relationMode = "prisma" keeps referential integrity in the app layer,
+// which is the recommended + safest setup for TiDB serverless.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Baby {
+  id            String   @id @default(cuid())
+  name          String
+  tagline       String?  @db.Text
+  birthDate     DateTime
+  firstBirthday DateTime?
+  coverImage    String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  months Month[]
+}
+
+model Month {
+  id          String   @id @default(cuid())
+  babyId      String
+  monthNumber Int // 0 = birth, 1..12 = each month
+  title       String
+  subtitle    String?
+  description  String?  @db.Text
+  coverImage  String?
+  date        DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  baby       Baby        @relation(fields: [babyId], references: [id], onDelete: Cascade)
+  gallery    Gallery[]
+  videos     Video[]
+  memories   Memory[]
+  milestones Milestone[]
+
+  @@unique([babyId, monthNumber])
+  @@index([babyId])
+}
+
+model Gallery {
+  id        String   @id @default(cuid())
+  monthId   String
+  imageUrl  String
+  publicId  String // Cloudinary public_id, for deletion
+  caption   String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  month Month @relation(fields: [monthId], references: [id], onDelete: Cascade)
+
+  @@index([monthId])
+}
+
+model Video {
+  id        String   @id @default(cuid())
+  monthId   String
+  videoUrl  String
+  publicId  String
+  thumbnail String?
+  caption   String?
+  createdAt DateTime @default(now())
+
+  month Month @relation(fields: [monthId], references: [id], onDelete: Cascade)
+
+  @@index([monthId])
+}
+
+model Memory {
+  id        String   @id @default(cuid())
+  monthId   String
+  title     String
+  content   String   @db.Text
+  mood      String?
+  date      DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  month Month @relation(fields: [monthId], references: [id], onDelete: Cascade)
+
+  @@index([monthId])
+}
+
+model Milestone {
+  id          String   @id @default(cuid())
+  monthId     String
+  title       String
+  description String?  @db.Text
+  icon        String?
+  achievedAt  DateTime?
+  createdAt   DateTime @default(now())
+
+  month Month @relation(fields: [monthId], references: [id], onDelete: Cascade)
+
+  @@index([monthId])
+}
+
+model Family {
+  id        String   @id @default(cuid())
+  name      String
+  relation  String // e.g. "Mother", "Grandpa"
+  photoUrl  String?
+  publicId  String?
+  message   String?  @db.Text
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Place {
+  id          String   @id @default(cuid())
+  name        String
+  description String?  @db.Text
+  date        DateTime?
+  imageUrl    String?
+  publicId    String?
+  createdAt   DateTime @default(now())
+}
+
+model Festival {
+  id          String   @id @default(cuid())
+  name        String
+  description String?  @db.Text
+  date        DateTime?
+  imageUrl    String?
+  publicId    String?
+  createdAt   DateTime @default(now())
+}

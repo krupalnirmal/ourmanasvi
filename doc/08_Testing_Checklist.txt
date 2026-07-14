@@ -1,0 +1,5 @@
+TESTING CHECKLIST
+
+Authentication Timeline Gallery Videos Memories Milestones Responsive
+Design Performance SEO Accessibility Cross-browser Testing Mobile
+Testing
