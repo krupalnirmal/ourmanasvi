@@ -49,7 +49,7 @@ export default function Gallery({
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
         {photos.map((photo, i) => {
           const viewIndex = viewable.findIndex((v) => v === photo);
           const clickable = !!photo.imageUrl;
@@ -60,13 +60,15 @@ export default function Gallery({
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.45, delay: i * 0.05 }}
-              className="group overflow-hidden rounded-2xl shadow-sm ring-1 ring-black/5"
+              className="group relative"
             >
               <button
                 type="button"
                 onClick={() => clickable && setOpen(viewIndex)}
-                className={`relative flex aspect-square w-full items-center justify-center ${a.bg} ${
-                  clickable ? "cursor-zoom-in" : "cursor-default"
+                className={`relative block aspect-square w-full overflow-hidden rounded-3xl shadow-md ring-1 ring-black/5 transition-all duration-300 ${
+                  clickable
+                    ? "cursor-zoom-in hover:-translate-y-1.5 hover:shadow-2xl hover:ring-2 hover:ring-soft-pink-deep/50"
+                    : `cursor-default ${a.bg} flex items-center justify-center`
                 }`}
                 aria-label={clickable ? `View ${photo.caption || "photo"}` : undefined}
               >
@@ -77,11 +79,23 @@ export default function Gallery({
                       src={thumb(photo.imageUrl)}
                       alt={photo.caption}
                       loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
-                    <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 text-white/0 transition-all group-hover:bg-black/25 group-hover:text-white/90">
-                      <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-medium backdrop-blur">
-                        View
+                    {/* soft gradient for legibility + hover depth */}
+                    <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent opacity-70 transition-opacity duration-300 group-hover:opacity-100" />
+                    {/* always-visible expand badge (works on touch too) */}
+                    <span className="pointer-events-none absolute right-2.5 top-2.5 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-ink shadow-md ring-1 ring-white/60 backdrop-blur-md transition-transform duration-300 group-hover:scale-110 group-hover:bg-white">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                      </svg>
+                    </span>
+                    {/* caption + hover "View" pill */}
+                    <span className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-3">
+                      <span className="font-hand text-lg leading-tight text-white drop-shadow">
+                        {photo.caption}
+                      </span>
+                      <span className="shrink-0 translate-y-1 rounded-full bg-white/90 px-3 py-1 text-[11px] font-bold text-ink opacity-0 shadow transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                        View ↗
                       </span>
                     </span>
                   </>
@@ -91,11 +105,6 @@ export default function Gallery({
                   </span>
                 )}
               </button>
-              {photo.caption && (
-                <figcaption className="bg-white/70 px-3 py-2 text-center font-hand text-lg text-ink-soft">
-                  {photo.caption}
-                </figcaption>
-              )}
             </motion.figure>
           );
         })}
