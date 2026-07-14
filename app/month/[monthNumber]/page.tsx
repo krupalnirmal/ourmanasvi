@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getMonthView, getMonthNumbers } from "@/lib/data";
 import { monthLabel, ACCENT_CLASSES } from "@/lib/months";
+import { banner } from "@/lib/cld";
 import Header from "@/components/sections/Header";
 import Footer from "@/components/sections/Footer";
 import Gallery from "@/components/ui/Gallery";
@@ -37,6 +38,7 @@ export default async function MonthPage({
   if (!month) notFound();
 
   const accent = ACCENT_CLASSES[month.accent];
+  const cover = month.gallery.find((g) => g.imageUrl)?.imageUrl;
   const numbers = await getMonthNumbers();
   const idx = numbers.indexOf(n);
   const prevN = idx > 0 ? numbers[idx - 1] : undefined;
@@ -50,26 +52,54 @@ export default async function MonthPage({
     <>
       <Header />
       <main className="flex-1">
-        {/* Hero */}
-        <section className={`relative overflow-hidden ${accent.bg} px-6 pb-16 pt-32`}>
-          <div className="mx-auto max-w-3xl text-center">
+        {/* Hero — real cover photo when available, else pastel */}
+        <section
+          className={`relative overflow-hidden px-6 pb-16 pt-32 ${cover ? "" : accent.bg}`}
+        >
+          {cover && (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={banner(cover)}
+                alt=""
+                aria-hidden
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/30 to-black/60" />
+            </>
+          )}
+          <div
+            className={`relative mx-auto max-w-3xl text-center ${cover ? "text-white" : ""}`}
+          >
             <Link
               href="/#timeline"
-              className="text-sm font-medium text-ink-soft transition-colors hover:text-ink"
+              className={`text-sm font-medium transition-colors ${
+                cover ? "text-white/80 hover:text-white" : "text-ink-soft hover:text-ink"
+              }`}
             >
               ← Back to the timeline
             </Link>
-            <p className="mt-6 font-hand text-3xl text-ink-soft">
+            <p
+              className={`mt-6 font-hand text-3xl ${cover ? "text-white/90" : "text-ink-soft"}`}
+            >
               {monthLabel(month.monthNumber)}
             </p>
-            <h1 className="mt-2 font-display text-4xl font-semibold text-ink sm:text-6xl">
+            <h1
+              className={`mt-2 font-display text-4xl font-semibold sm:text-6xl ${
+                cover ? "text-white drop-shadow" : "text-ink"
+              }`}
+            >
               {month.title}
             </h1>
             {month.subtitle && (
-              <p className="mt-3 text-lg text-ink-soft">{month.subtitle}</p>
+              <p className={`mt-3 text-lg ${cover ? "text-white/85" : "text-ink-soft"}`}>
+                {month.subtitle}
+              </p>
             )}
             {month.intro && (
-              <p className="mx-auto mt-6 max-w-xl text-ink-soft">{month.intro}</p>
+              <p className={`mx-auto mt-6 max-w-xl ${cover ? "text-white/85" : "text-ink-soft"}`}>
+                {month.intro}
+              </p>
             )}
           </div>
         </section>

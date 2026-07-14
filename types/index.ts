@@ -14,4 +14,5 @@ export interface TimelineItem {
   title: string;
   subtitle?: string;
   accent: "pink" | "blue" | "lavender" | "cream";
+  coverImage?: string;
 }

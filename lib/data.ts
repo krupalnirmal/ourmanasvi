@@ -34,7 +34,16 @@ export async function getTimeline(): Promise<TimelineItem[]> {
   try {
     const months = await prisma.month.findMany({
       orderBy: { monthNumber: "asc" },
-      select: { monthNumber: true, title: true, subtitle: true },
+      select: {
+        monthNumber: true,
+        title: true,
+        subtitle: true,
+        gallery: {
+          orderBy: { sortOrder: "asc" },
+          take: 1,
+          select: { imageUrl: true },
+        },
+      },
     });
     if (months.length === 0) throw new Error("empty");
     return months.map((m) => ({
@@ -42,6 +51,7 @@ export async function getTimeline(): Promise<TimelineItem[]> {
       title: m.title,
       subtitle: m.subtitle ?? undefined,
       accent: accentFor(m.monthNumber),
+      coverImage: m.gallery[0]?.imageUrl,
     }));
   } catch {
     return MONTHS.map(({ monthNumber, title, subtitle, accent }) => ({
@@ -102,6 +112,27 @@ export async function getMonthView(n: number): Promise<MonthView | undefined> {
     };
   } catch {
     return staticView(n);
+  }
+}
+
+/** A few real photos to feature on the homepage hero (empty if none uploaded). */
+export async function getFeaturedPhotos(limit = 5): Promise<string[]> {
+  try {
+    const photos = await prisma.gallery.findMany({
+      orderBy: { createdAt: "desc" },
+      select: { imageUrl: true },
+      take: 40,
+    });
+    if (photos.length === 0) return [];
+    // Spread the picks across the set so they're varied, not all from one month.
+    const step = Math.max(1, Math.floor(photos.length / limit));
+    const picked: string[] = [];
+    for (let i = 0; i < photos.length && picked.length < limit; i += step) {
+      picked.push(photos[i].imageUrl);
+    }
+    return picked;
+  } catch {
+    return [];
   }
 }
 

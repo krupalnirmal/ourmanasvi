@@ -1,16 +1,28 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { cld, banner } from "@/lib/cld";
 
-export default function Hero() {
+export default function Hero({ photos = [] }: { photos?: string[] }) {
+  const bg = photos[0];
+  const cluster = photos.slice(1, 4);
+
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-6">
-      {/* Dreamy pastel background */}
+      {/* Soft photo wash (kept light to preserve the airy, premium feel) */}
+      {bg && (
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={banner(bg)} alt="" aria-hidden className="h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-b from-cream/85 via-cream/70 to-cream" />
+        </div>
+      )}
+
+      {/* Dreamy pastel blobs */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -left-24 top-10 h-80 w-80 rounded-full bg-soft-pink/40 blur-3xl" />
         <div className="absolute right-0 top-1/3 h-96 w-96 rounded-full bg-baby-blue/40 blur-3xl" />
         <div className="absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-lavender/50 blur-3xl" />
-        <div className="absolute inset-0 bg-gradient-to-b from-cream/0 via-cream/20 to-cream" />
       </div>
 
       <div className="max-w-3xl text-center">
@@ -41,6 +53,31 @@ export default function Hero() {
           Every giggle, every tiny milestone, every unforgettable moment of
           Manasvi&apos;s first year — gathered here, month by month.
         </motion.p>
+
+        {/* Polaroid cluster of real photos */}
+        {cluster.length > 0 && (
+          <div className="mt-10 flex items-end justify-center gap-3 sm:gap-5">
+            {cluster.map((url, i) => (
+              <motion.div
+                key={url}
+                initial={{ opacity: 0, y: 24, rotate: 0 }}
+                animate={{ opacity: 1, y: 0, rotate: [-6, 3, -4][i % 3] }}
+                transition={{ duration: 0.7, delay: 0.7 + i * 0.12 }}
+                className={`overflow-hidden rounded-2xl border-4 border-white bg-white shadow-xl ${
+                  i === 1 ? "h-36 w-28 sm:h-48 sm:w-40" : "h-28 w-24 sm:h-40 sm:w-32"
+                }`}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={cld(url, "w_320,h_400,c_fill,g_auto,q_auto,f_auto")}
+                  alt=""
+                  aria-hidden
+                  className="h-full w-full object-cover"
+                />
+              </motion.div>
+            ))}
+          </div>
+        )}
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
