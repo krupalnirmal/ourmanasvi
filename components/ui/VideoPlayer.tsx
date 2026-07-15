@@ -3,11 +3,21 @@
 import { useEffect, useRef, useState } from "react";
 import type { MonthVideo } from "@/lib/data";
 
+const SPEEDS = [1, 0.75, 0.5];
+
 export default function VideoPlayer({ video }: { video: MonthVideo }) {
   const wrapRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [nat, setNat] = useState({ w: 16, h: 9 }); // coded dimensions
   const [rot, setRot] = useState(0); // 0 | 90 | 180 | 270
   const [box, setBox] = useState({ w: 0, h: 0 });
+  const [speed, setSpeed] = useState(1);
+
+  function cycleSpeed() {
+    const next = SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length];
+    setSpeed(next);
+    if (videoRef.current) videoRef.current.playbackRate = next;
+  }
 
   const rotated = rot % 180 !== 0;
   // Aspect ratio of the displayed box (swaps when rotated a quarter turn).
@@ -49,6 +59,7 @@ export default function VideoPlayer({ video }: { video: MonthVideo }) {
         className="relative mx-auto max-h-[75vh] overflow-hidden rounded-2xl bg-black shadow-sm ring-1 ring-black/10"
       >
         <video
+          ref={videoRef}
           key={video.videoUrl}
           controls
           playsInline
@@ -58,11 +69,24 @@ export default function VideoPlayer({ video }: { video: MonthVideo }) {
           className="bg-black object-contain"
           onLoadedMetadata={(e) => {
             const v = e.currentTarget;
+            v.playbackRate = speed;
             if (v.videoWidth && v.videoHeight) setNat({ w: v.videoWidth, h: v.videoHeight });
           }}
         >
           <source src={video.videoUrl} />
         </video>
+
+        {/* Speed control */}
+        <button
+          type="button"
+          onClick={cycleSpeed}
+          aria-label="Playback speed"
+          className={`absolute left-2 top-2 z-10 flex h-9 min-w-9 items-center justify-center rounded-full px-2 text-xs font-bold shadow-md ring-1 ring-white/60 backdrop-blur-md transition-transform hover:scale-110 ${
+            speed === 1 ? "bg-white/85 text-ink hover:bg-white" : "bg-soft-pink-deep text-white"
+          }`}
+        >
+          {speed}×
+        </button>
 
         {/* Rotate control */}
         <button

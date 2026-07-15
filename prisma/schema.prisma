@@ -64,13 +64,14 @@ model Gallery {
 }
 
 model Video {
-  id        String   @id @default(cuid())
-  monthId   String
-  videoUrl  String
-  publicId  String
-  thumbnail String?
-  caption   String?
-  createdAt DateTime @default(now())
+  id         String   @id @default(cuid())
+  monthId    String
+  videoUrl   String
+  publicId   String
+  thumbnail  String?
+  caption    String?
+  slowMotion Boolean  @default(false)
+  createdAt  DateTime @default(now())
 
   month Month @relation(fields: [monthId], references: [id], onDelete: Cascade)
 

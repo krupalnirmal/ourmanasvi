@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { MONTHS, type MonthDetail } from "@/lib/journey-data";
+import { cld } from "@/lib/cld";
 import type { TimelineItem } from "@/types";
 
 /**
@@ -96,7 +97,8 @@ export async function getMonthView(n: number): Promise<MonthView | undefined> {
           : staticGallery,
       videos: month.videos.map((v) => ({
         caption: v.caption ?? "",
-        videoUrl: v.videoUrl,
+        // Bake in half-speed slow motion via Cloudinary when enabled.
+        videoUrl: v.slowMotion ? cld(v.videoUrl, "e_accelerate:-50") : v.videoUrl,
         thumbnail: v.thumbnail ?? undefined,
       })),
       memories: month.memories.map((m) => ({

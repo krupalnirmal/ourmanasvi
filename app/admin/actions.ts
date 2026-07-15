@@ -142,6 +142,12 @@ export async function deleteVideo(id: string, publicId: string, monthNumber: num
   refresh(monthNumber);
 }
 
+export async function setVideoSlowMo(id: string, monthNumber: number, value: boolean) {
+  await requireAuth();
+  await prisma.video.update({ where: { id }, data: { slowMotion: value } });
+  refresh(monthNumber);
+}
+
 /* ── Home hero background ────────────────────────────────── */
 export async function setHeroImage(formData: FormData) {
   await requireAuth();

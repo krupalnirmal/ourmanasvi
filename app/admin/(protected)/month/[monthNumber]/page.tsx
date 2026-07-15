@@ -10,6 +10,7 @@ import {
   deleteMilestone,
   deleteGalleryPhoto,
   deleteVideo,
+  setVideoSlowMo,
 } from "@/app/admin/actions";
 import Uploader from "@/components/admin/Uploader";
 import DeleteButton from "@/components/admin/DeleteButton";
@@ -134,6 +135,17 @@ export default async function MonthEditor({
                     confirmText="Delete this video?"
                   />
                 </div>
+                <form action={setVideoSlowMo.bind(null, v.id, month.monthNumber, !v.slowMotion)}>
+                  <button
+                    className={`w-full px-2 py-1.5 text-xs font-medium ${
+                      v.slowMotion
+                        ? "bg-soft-pink-deep text-white"
+                        : "bg-lavender/30 text-ink-soft hover:bg-lavender/50"
+                    }`}
+                  >
+                    🐢 Slow motion: {v.slowMotion ? "ON" : "OFF"}
+                  </button>
+                </form>
               </div>
             ))}
           </div>
