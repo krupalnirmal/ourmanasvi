@@ -8,6 +8,16 @@ import type { StorySlide } from "@/lib/data";
 
 const SLIDE_MS = 3800;
 
+// Gen-Z reel-style entrance animations, cycled per slide.
+const VARIANTS = [
+  { initial: { opacity: 0, scale: 0.72 }, animate: { opacity: 1, scale: 1 } }, // zoom pop
+  { initial: { opacity: 0, x: 160, rotate: 5 }, animate: { opacity: 1, x: 0, rotate: 0 } }, // slide from right
+  { initial: { opacity: 0, x: -160, rotate: -5 }, animate: { opacity: 1, x: 0, rotate: 0 } }, // slide from left
+  { initial: { opacity: 0, y: 140, scale: 0.9 }, animate: { opacity: 1, y: 0, scale: 1 } }, // rise up
+  { initial: { opacity: 0, rotate: -9, scale: 0.82 }, animate: { opacity: 1, rotate: 0, scale: 1 } }, // tilt in
+];
+const SPRING = { type: "spring" as const, stiffness: 130, damping: 17 };
+
 export default function JourneyStory({
   slides,
   audioUrl,
@@ -125,7 +135,7 @@ export default function JourneyStory({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 1 }}
+                  transition={{ duration: 0.5 }}
                   className="absolute inset-0"
                 >
                   {/* Blurred backdrop fills the screen (crop is fine when blurred) */}
@@ -137,13 +147,16 @@ export default function JourneyStory({
                     className="animate-kenburns absolute inset-0 h-full w-full scale-110 object-cover"
                   />
                   <div className="absolute inset-0 bg-black/45" />
-                  {/* Full image, never cropped */}
+                  {/* Full image, never cropped — with a snappy per-slide entrance */}
                   <div className="absolute inset-0 flex items-center justify-center p-2 sm:p-6">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <motion.img
                       src={cld(slide.imageUrl, "w_1600,h_1600,c_limit,q_auto,f_auto")}
                       alt=""
                       aria-hidden
+                      initial={VARIANTS[i % VARIANTS.length].initial}
+                      animate={VARIANTS[i % VARIANTS.length].animate}
+                      transition={SPRING}
                       className="max-h-full max-w-full rounded-xl object-contain shadow-2xl"
                     />
                   </div>
