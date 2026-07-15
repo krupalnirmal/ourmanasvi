@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { banner } from "@/lib/cld";
+import { cld } from "@/lib/cld";
 import { monthLabel } from "@/lib/months";
 import type { StorySlide } from "@/lib/data";
 
@@ -128,14 +128,26 @@ export default function JourneyStory({
                   transition={{ duration: 1 }}
                   className="absolute inset-0"
                 >
+                  {/* Blurred backdrop fills the screen (crop is fine when blurred) */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={banner(slide.imageUrl)}
+                    src={cld(slide.imageUrl, "w_1280,h_720,c_fill,q_auto,f_auto,e_blur:1500")}
                     alt=""
                     aria-hidden
-                    className="animate-kenburns h-full w-full object-cover"
+                    className="animate-kenburns absolute inset-0 h-full w-full scale-110 object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-black/40" />
+                  <div className="absolute inset-0 bg-black/45" />
+                  {/* Full image, never cropped */}
+                  <div className="absolute inset-0 flex items-center justify-center p-2 sm:p-6">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={cld(slide.imageUrl, "w_1600,h_1600,c_limit,q_auto,f_auto")}
+                      alt=""
+                      aria-hidden
+                      className="max-h-full max-w-full rounded-xl object-contain shadow-2xl"
+                    />
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                   <div className="absolute inset-x-0 bottom-20 text-center">
                     <p className="font-hand text-2xl text-white/90 sm:text-3xl">
                       {monthLabel(slide.monthNumber)}
