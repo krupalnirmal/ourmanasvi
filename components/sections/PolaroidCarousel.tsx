@@ -12,7 +12,7 @@ function chunk<T>(arr: T[], n: number): T[][] {
 
 const ROTATE = [-7, 3, -4];
 const SIZE = (i: number) =>
-  i === 1 ? "h-36 w-28 sm:h-48 sm:w-40" : "h-28 w-24 sm:h-40 sm:w-32";
+  i === 1 ? "h-48 w-36 sm:h-72 sm:w-56" : "h-40 w-32 sm:h-60 sm:w-44";
 
 /** Auto-sliding polaroid trio; cycles through all photos in groups of 3. */
 export default function PolaroidCarousel({ photos }: { photos: string[] }) {
@@ -30,11 +30,11 @@ export default function PolaroidCarousel({ photos }: { photos: string[] }) {
 
   return (
     <div className="mt-6">
-      <div className="relative mx-auto flex h-40 max-w-md items-end justify-center sm:h-52">
+      <div className="relative mx-auto flex h-52 max-w-2xl items-end justify-center sm:h-80">
         <AnimatePresence mode="sync">
           <motion.div
             key={idx}
-            className="absolute inset-0 flex items-end justify-center gap-3 sm:gap-5"
+            className="absolute inset-0 flex items-end justify-center gap-3 sm:gap-6"
             initial={{ opacity: 0, x: 60 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -60 }}
