@@ -2,8 +2,9 @@
 
 import { motion } from "framer-motion";
 import { banner } from "@/lib/cld";
-import type { BabyInfo } from "@/lib/data";
+import type { BabyInfo, StorySlide } from "@/lib/data";
 import PolaroidCarousel from "@/components/sections/PolaroidCarousel";
+import JourneyStory from "@/components/sections/JourneyStory";
 
 function fmt(d?: string) {
   if (!d) return "";
@@ -17,9 +18,13 @@ function fmt(d?: string) {
 export default function Hero({
   photos = [],
   baby,
+  story = [],
+  audioUrl,
 }: {
   photos?: string[];
   baby?: BabyInfo | null;
+  story?: StorySlide[];
+  audioUrl?: string;
 }) {
   // Admin-chosen cover wins; otherwise fall back to the latest photo.
   const bg = baby?.coverImage || photos[0];
@@ -98,7 +103,7 @@ export default function Hero({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.65 }}
-          className="mt-7 flex items-center justify-center gap-4"
+          className="mt-7 flex flex-wrap items-center justify-center gap-3"
         >
           <a
             href="#timeline"
@@ -106,6 +111,7 @@ export default function Hero({
           >
             Begin the Journey
           </a>
+          <JourneyStory slides={story} audioUrl={audioUrl} babyName={baby?.name} />
         </motion.div>
       </div>
     </section>

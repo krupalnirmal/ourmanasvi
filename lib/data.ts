@@ -185,6 +185,32 @@ export async function getFeaturedMoments(limit = 8): Promise<FeaturedMoment[]> {
   }
 }
 
+export interface StorySlide {
+  imageUrl: string;
+  monthNumber: number;
+  label: string;
+}
+
+/** All gallery photos in journey order (birth → first birthday), for the story player. */
+export async function getStoryPhotos(): Promise<StorySlide[]> {
+  try {
+    const rows = await prisma.gallery.findMany({
+      orderBy: [{ month: { monthNumber: "asc" } }, { sortOrder: "asc" }],
+      select: {
+        imageUrl: true,
+        month: { select: { monthNumber: true, title: true } },
+      },
+    });
+    return rows.map((r) => ({
+      imageUrl: r.imageUrl,
+      monthNumber: r.month.monthNumber,
+      label: r.month.title,
+    }));
+  } catch {
+    return [];
+  }
+}
+
 export interface FamilyMember {
   id: string;
   name: string;

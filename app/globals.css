@@ -39,6 +39,19 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Ken Burns effect for the story player */
+@keyframes kenburns {
+  from {
+    transform: scale(1.06) translate(0, 0);
+  }
+  to {
+    transform: scale(1.2) translate(-1.5%, -2%);
+  }
+}
+.animate-kenburns {
+  animation: kenburns 5.5s ease-out both;
+}
+
 /* Soft dreamy scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
