@@ -14,9 +14,10 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [timeline, featured, baby, stats] = await Promise.all([
+  const [timeline, featured, heroPhotos, baby, stats] = await Promise.all([
     getTimeline(),
     getFeaturedMoments(8),
+    getFeaturedMoments(15),
     getBaby(),
     getStats(),
   ]);
@@ -25,7 +26,7 @@ export default async function Home() {
     <>
       <LoadingScreen />
       <main className="flex-1">
-        <Hero photos={featured.map((f) => f.imageUrl)} baby={baby} />
+        <Hero photos={heroPhotos.map((f) => f.imageUrl)} baby={baby} />
         <StatsBand stats={stats} />
         <FeaturedMoments moments={featured} />
         <Timeline items={timeline} />

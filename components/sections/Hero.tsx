@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { cld, banner } from "@/lib/cld";
+import { banner } from "@/lib/cld";
 import type { BabyInfo } from "@/lib/data";
+import PolaroidCarousel from "@/components/sections/PolaroidCarousel";
 
 function fmt(d?: string) {
   if (!d) return "";
@@ -22,8 +23,8 @@ export default function Hero({
 }) {
   // Admin-chosen cover wins; otherwise fall back to the latest photo.
   const bg = baby?.coverImage || photos[0];
-  // Avoid repeating the background photo in the polaroid cluster.
-  const cluster = baby?.coverImage ? photos.slice(0, 3) : photos.slice(1, 4);
+  // Photos for the auto-sliding polaroids (skip the background if it's photos[0]).
+  const carousel = baby?.coverImage ? photos : photos.slice(1);
   const dates =
     baby?.birthDate && baby?.firstBirthday
       ? `${fmt(baby.birthDate)}  —  ${fmt(baby.firstBirthday)}`
@@ -91,29 +92,7 @@ export default function Hero({
             "Every giggle, every tiny milestone, every unforgettable moment of Manasvi's first year — gathered here, month by month."}
         </motion.p>
 
-        {cluster.length > 0 && (
-          <div className="mt-6 flex items-end justify-center gap-3 sm:gap-5">
-            {cluster.map((url, i) => (
-              <motion.div
-                key={url}
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0, rotate: [-6, 3, -4][i % 3] }}
-                transition={{ duration: 0.7, delay: 0.7 + i * 0.12 }}
-                className={`overflow-hidden rounded-2xl border-4 border-white bg-white shadow-xl ${
-                  i === 1 ? "h-36 w-28 sm:h-48 sm:w-40" : "h-28 w-24 sm:h-40 sm:w-32"
-                }`}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={cld(url, "w_320,h_400,c_fill,g_auto,q_auto,f_auto")}
-                  alt=""
-                  aria-hidden
-                  className="h-full w-full object-cover"
-                />
-              </motion.div>
-            ))}
-          </div>
-        )}
+        {carousel.length > 0 && <PolaroidCarousel photos={carousel} />}
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
