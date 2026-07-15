@@ -14,9 +14,6 @@ import {
 // Reflect admin edits immediately.
 export const dynamic = "force-dynamic";
 
-const STORY_AUDIO =
-  "https://res.cloudinary.com/dt1zpdsy1/video/upload/v1784091868/ourmanasvi/story-audio.mp3";
-
 export default async function Home() {
   const [timeline, featured, heroPhotos, story, baby, stats] = await Promise.all([
     getTimeline(),
@@ -35,7 +32,7 @@ export default async function Home() {
           photos={heroPhotos.map((f) => f.imageUrl)}
           baby={baby}
           story={story}
-          audioUrl={STORY_AUDIO}
+          audioUrl={baby?.storyAudio}
         />
         <StatsBand stats={stats} />
         <FeaturedMoments moments={featured} />

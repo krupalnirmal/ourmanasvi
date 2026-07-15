@@ -163,6 +163,27 @@ export async function clearHeroImage() {
   revalidatePath("/admin");
 }
 
+/* ── Journey video music ─────────────────────────────────── */
+export async function setStoryAudio(formData: FormData) {
+  await requireAuth();
+  const audioUrl = String(formData.get("audioUrl") ?? "").trim();
+  if (!audioUrl) return;
+  const baby = await prisma.baby.findFirst();
+  if (!baby) return;
+  await prisma.baby.update({ where: { id: baby.id }, data: { storyAudio: audioUrl } });
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
+
+export async function clearStoryAudio() {
+  await requireAuth();
+  const baby = await prisma.baby.findFirst();
+  if (!baby) return;
+  await prisma.baby.update({ where: { id: baby.id }, data: { storyAudio: null } });
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
+
 /* ── Family ─────────────────────────────────────────────── */
 function str(fd: FormData, k: string) {
   return String(fd.get(k) ?? "").trim();

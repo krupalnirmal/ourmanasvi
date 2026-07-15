@@ -2,8 +2,9 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { monthLabel } from "@/lib/months";
 import { banner } from "@/lib/cld";
-import { setHeroImage, clearHeroImage } from "@/app/admin/actions";
+import { setHeroImage, clearHeroImage, setStoryAudio, clearStoryAudio } from "@/app/admin/actions";
 import ImagePicker from "@/components/admin/ImagePicker";
+import AudioPicker from "@/components/admin/AudioPicker";
 
 export const dynamic = "force-dynamic";
 
@@ -59,6 +60,32 @@ export default async function AdminDashboard() {
             )}
           </div>
         </div>
+      </section>
+
+      {/* Journey video music */}
+      <section className="mt-6 rounded-3xl bg-white/80 p-6 shadow-sm ring-1 ring-lavender/40">
+        <h2 className="font-display text-xl font-semibold text-ink">
+          “Watch our Journey” music 🎵
+        </h2>
+        <p className="mt-1 text-sm text-ink-soft">
+          Upload a song to play during the story video. Anything you set here replaces the current
+          track.
+        </p>
+        <form action={setStoryAudio} className="mt-4 max-w-md space-y-3">
+          <AudioPicker current={baby?.storyAudio ?? undefined} />
+          <div className="flex items-center gap-3">
+            <button className="rounded-full bg-soft-pink-deep px-5 py-2 text-sm font-semibold text-white">
+              Set music
+            </button>
+          </div>
+        </form>
+        {baby?.storyAudio && (
+          <form action={clearStoryAudio} className="mt-2">
+            <button className="text-sm font-medium text-ink-soft underline hover:text-ink">
+              Remove music
+            </button>
+          </form>
+        )}
       </section>
 
       {/* Section shortcuts */}
