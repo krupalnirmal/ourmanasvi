@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { deleteAsset } from "@/lib/cloudinary";
+import { deleteAsset, cloudinary, CLOUDINARY_FOLDER } from "@/lib/cloudinary";
 
 async function requireAuth() {
   const session = await auth();
@@ -166,8 +166,25 @@ export async function clearHeroImage() {
 /* ── Journey video music ─────────────────────────────────── */
 export async function setStoryAudio(formData: FormData) {
   await requireAuth();
-  const audioUrl = String(formData.get("audioUrl") ?? "").trim();
+  let audioUrl = String(formData.get("audioUrl") ?? "").trim();
   if (!audioUrl) return;
+
+  // Re-host external links on Cloudinary (some hosts block hotlinking; this
+  // also keeps delivery on our free CDN). Skip if it's already our Cloudinary.
+  const ours = `res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}`;
+  if (/^https?:\/\//i.test(audioUrl) && !audioUrl.includes(ours)) {
+    try {
+      const res = await cloudinary.uploader.upload(audioUrl, {
+        resource_type: "video",
+        folder: CLOUDINARY_FOLDER,
+        public_id: `story-audio-${Date.now()}`,
+      });
+      audioUrl = res.secure_url;
+    } catch {
+      // Keep the raw URL if Cloudinary can't fetch it.
+    }
+  }
+
   const baby = await prisma.baby.findFirst();
   if (!baby) return;
   await prisma.baby.update({ where: { id: baby.id }, data: { storyAudio: audioUrl } });

@@ -79,8 +79,30 @@ export default async function AdminDashboard() {
             </button>
           </div>
         </form>
+
+        {/* Or paste an online audio link */}
+        <div className="mt-5 max-w-md border-t border-lavender/40 pt-5">
+          <p className="mb-2 text-sm font-medium text-ink">Or paste an online audio link</p>
+          <form action={setStoryAudio} className="flex flex-col gap-2 sm:flex-row">
+            <input
+              name="audioUrl"
+              type="url"
+              placeholder="https://…/song.mp3"
+              required
+              className="flex-1 rounded-xl border border-lavender/60 bg-white px-3 py-2 text-sm outline-none focus:border-lavender-deep"
+            />
+            <button className="rounded-full bg-ink px-5 py-2 text-sm font-semibold text-white">
+              Set from link
+            </button>
+          </form>
+          <p className="mt-1.5 text-xs text-ink-soft">
+            Use a direct audio file link (ending in .mp3/.m4a). We re-host it for reliability.
+            Please use music you have the rights to.
+          </p>
+        </div>
+
         {baby?.storyAudio && (
-          <form action={clearStoryAudio} className="mt-2">
+          <form action={clearStoryAudio} className="mt-4">
             <button className="text-sm font-medium text-ink-soft underline hover:text-ink">
               Remove music
             </button>
