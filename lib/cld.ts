@@ -27,3 +27,10 @@ export const large = (url?: string | null) =>
 /** Wide banner crop for hero backgrounds. */
 export const banner = (url?: string | null) =>
   cld(url, "w_1920,h_1080,c_fill,g_auto,q_auto,f_auto");
+
+/**
+ * Hero banner crop that keeps faces in frame (baby photos are portraits, so a
+ * plain centre crop cuts the subject out).
+ */
+export const heroBanner = (url?: string | null) =>
+  cld(url, "w_1800,h_1100,c_fill,g_faces:auto,q_auto,f_auto");

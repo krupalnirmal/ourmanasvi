@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { banner } from "@/lib/cld";
+import { heroBanner } from "@/lib/cld";
 import type { BabyInfo, StorySlide } from "@/lib/data";
 import JourneyStory from "@/components/sections/JourneyStory";
 
@@ -62,10 +62,10 @@ export default function Hero({
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={banner(banners[idx])}
+                src={heroBanner(banners[idx])}
                 alt=""
                 aria-hidden
-                className="animate-kenburns h-full w-full object-cover object-[50%_22%]"
+                className="animate-kenburns-soft h-full w-full object-cover object-center"
               />
             </motion.div>
           )}

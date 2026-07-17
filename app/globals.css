@@ -52,6 +52,19 @@ body {
   animation: kenburns 5.5s ease-out both;
 }
 
+/* Very gentle drift for the hero banner (keeps the subject in frame) */
+@keyframes kenburns-soft {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+.animate-kenburns-soft {
+  animation: kenburns-soft 9s ease-out both;
+}
+
 /* Soft dreamy scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
