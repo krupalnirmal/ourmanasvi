@@ -28,6 +28,9 @@ export default function Hero({
   const [idx, setIdx] = useState(0);
   const [musicOn, setMusicOn] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const stoppedByUser = useRef(false); // respect a manual stop
+  const inView = useRef(true);
 
   useEffect(() => {
     if (banners.length <= 1) return;
@@ -35,20 +38,69 @@ export default function Hero({
     return () => clearInterval(t);
   }, [banners.length]);
 
-  // Music only ever starts from the user's tap (browsers require a gesture).
+  /**
+   * Music: browsers block autoplay with sound until the visitor has interacted
+   * with the page, so we try immediately and otherwise start on their first
+   * tap. It plays only while the banner is on screen, and a manual stop sticks.
+   */
+  useEffect(() => {
+    if (!bannerAudio) return;
+
+    const tryPlay = () => {
+      const a = audioRef.current;
+      if (!a || stoppedByUser.current || !inView.current) return;
+      a.play().then(() => setMusicOn(true)).catch(() => {});
+    };
+
+    tryPlay(); // works if the browser already trusts this site
+
+    const onFirstGesture = () => tryPlay();
+    document.addEventListener("pointerdown", onFirstGesture, { once: true });
+    document.addEventListener("keydown", onFirstGesture, { once: true });
+
+    // Pause when the banner scrolls out of view, resume when it's back.
+    const el = sectionRef.current;
+    let io: IntersectionObserver | undefined;
+    if (el) {
+      io = new IntersectionObserver(
+        ([entry]) => {
+          inView.current = entry.isIntersecting;
+          const a = audioRef.current;
+          if (!a) return;
+          if (!entry.isIntersecting) {
+            a.pause();
+            setMusicOn(false);
+          } else {
+            tryPlay();
+          }
+        },
+        { threshold: 0.35 }
+      );
+      io.observe(el);
+    }
+
+    return () => {
+      document.removeEventListener("pointerdown", onFirstGesture);
+      document.removeEventListener("keydown", onFirstGesture);
+      io?.disconnect();
+    };
+  }, [bannerAudio]);
+
   function toggleMusic() {
     const a = audioRef.current;
     if (!a) return;
     if (musicOn) {
       a.pause();
+      stoppedByUser.current = true; // don't auto-resume after a manual stop
       setMusicOn(false);
     } else {
+      stoppedByUser.current = false;
       a.play().then(() => setMusicOn(true)).catch(() => {});
     }
   }
 
   return (
-    <section className="px-3 pt-4 sm:px-6">
+    <section ref={sectionRef} className="px-3 pt-4 sm:px-6">
       <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-gradient-to-b from-cream-deep via-cream to-soft-pink/15 shadow-sm ring-1 ring-lavender/30 md:bg-gradient-to-br">
         <div className="grid md:grid-cols-2 md:items-center">
           {/* Photo — first on mobile, right on desktop */}
@@ -94,7 +146,7 @@ export default function Hero({
             {/* Slide with music */}
             {bannerAudio && (
               <>
-                <audio ref={audioRef} src={bannerAudio} loop preload="none" />
+                <audio ref={audioRef} src={bannerAudio} loop preload="auto" />
                 <button
                   onClick={toggleMusic}
                   aria-pressed={musicOn}
