@@ -2,146 +2,124 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const NAV = [
-  { href: "/journey", label: "Journey" },
-  { href: "/family", label: "Family" },
-  { href: "/places", label: "Places" },
+  { href: "/", label: "Home" },
+  { href: "/journey", label: "Timeline" },
+  { href: "/gallery", label: "Gallery" },
   { href: "/events", label: "Events" },
-];
-const MORE = [
+  { href: "/milestones", label: "Milestones" },
+  { href: "/places", label: "Trips" },
+  { href: "/family", label: "Family" },
   { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
 ];
-
-function SearchBar({ big = false }: { big?: boolean }) {
-  return (
-    <form action="/search" className={big ? "w-full" : "hidden flex-1 md:flex md:max-w-md lg:max-w-lg"}>
-      <div className="flex w-full items-center rounded-full bg-white/90 py-1 pl-4 pr-1 shadow-sm ring-1 ring-lavender/50 focus-within:ring-lavender-deep">
-        <input
-          name="q"
-          placeholder="Search memories, months, family…"
-          className="min-w-0 flex-1 bg-transparent py-1.5 text-sm text-ink outline-none placeholder:text-ink-soft/70"
-        />
-        <span className="mr-1 hidden items-center gap-1 border-l border-lavender/50 pl-3 text-xs font-medium text-ink-soft sm:flex">
-          All
-          <span className="text-[10px]">▾</span>
-        </span>
-        <button
-          type="submit"
-          aria-label="Search"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-soft-pink-deep text-white transition-transform hover:scale-105"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <circle cx="11" cy="11" r="7" />
-            <path d="m20 20-3.5-3.5" />
-          </svg>
-        </button>
-      </div>
-    </form>
-  );
-}
 
 export default function SiteHeader() {
   const [open, setOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
+  const pathname = usePathname();
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-lavender/40 bg-cream/90 backdrop-blur-md">
-      <nav className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-2.5 sm:px-6">
-        {/* Logo — simple handwritten wordmark */}
-        <Link
-          href="/"
-          onClick={() => setOpen(false)}
-          className="shrink-0 font-hand text-3xl font-bold leading-none tracking-tight text-ink transition-transform duration-300 hover:scale-105 sm:text-4xl"
-        >
-          Manasvi
+    <header className="sticky top-0 z-40 border-b border-lavender/40 bg-white/85 backdrop-blur-md">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+        {/* Logo */}
+        <Link href="/" onClick={() => setOpen(false)} className="group flex shrink-0 items-center gap-2.5">
+          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-soft-pink/30 text-soft-pink-deep transition-transform group-hover:scale-105">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z" />
+            </svg>
+          </span>
+          <span className="flex flex-col leading-none">
+            <span className="font-hand text-2xl font-bold text-ink">Manasvi</span>
+            <span className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.18em] text-ink-soft">
+              Forever Memories
+            </span>
+          </span>
         </Link>
 
-        {/* Search (desktop) */}
-        <SearchBar />
-
         {/* Desktop nav */}
-        <ul className="ml-auto hidden items-center gap-6 lg:flex">
+        <ul className="hidden items-center gap-5 lg:flex xl:gap-7">
           {NAV.map((l) => (
             <li key={l.href}>
-              <a href={l.href} className="text-sm font-medium text-ink-soft transition-colors hover:text-soft-pink-deep">
+              <Link
+                href={l.href}
+                className={`relative text-sm font-medium transition-colors ${
+                  isActive(l.href)
+                    ? "text-soft-pink-deep"
+                    : "text-ink-soft hover:text-soft-pink-deep"
+                }`}
+              >
                 {l.label}
-              </a>
+                {isActive(l.href) && (
+                  <span className="absolute -bottom-1.5 left-0 h-0.5 w-full rounded-full bg-soft-pink-deep" />
+                )}
+              </Link>
             </li>
           ))}
-          {/* More dropdown */}
-          <li className="relative">
-            <button
-              onClick={() => setMoreOpen((o) => !o)}
-              onBlur={() => setTimeout(() => setMoreOpen(false), 150)}
-              className="flex items-center gap-1 text-sm font-medium text-ink-soft transition-colors hover:text-soft-pink-deep"
-            >
-              More <span className="text-[10px]">▾</span>
-            </button>
-            {moreOpen && (
-              <ul className="absolute right-0 top-8 w-40 overflow-hidden rounded-2xl border border-lavender/40 bg-white py-1 shadow-lg">
-                {MORE.map((l) => (
-                  <li key={l.href}>
-                    <Link href={l.href} className="block px-4 py-2 text-sm text-ink-soft hover:bg-cream hover:text-soft-pink-deep">
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
         </ul>
 
-        {/* Right actions (desktop) */}
-        <div className="hidden shrink-0 items-center gap-3 lg:flex">
-          <Link href="/contact" className="text-sm font-medium text-ink-soft hover:text-ink">
-            Guestbook
+        {/* Right actions */}
+        <div className="flex shrink-0 items-center gap-2">
+          <Link
+            href="/search"
+            aria-label="Search"
+            className="flex h-10 w-10 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-cream hover:text-ink"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" />
+            </svg>
           </Link>
           <Link
-            href="/admin/login"
-            className="rounded-full bg-ink px-5 py-2 text-sm font-semibold text-white transition-transform hover:scale-105"
+            href="/favorites"
+            className="hidden items-center gap-1.5 rounded-full bg-soft-pink-deep px-4 py-2 text-sm font-semibold text-white shadow-sm transition-transform hover:scale-105 sm:inline-flex"
           >
-            Log in
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z" />
+            </svg>
+            My Favorites
           </Link>
+          <button
+            className="flex h-10 w-10 items-center justify-center rounded-xl text-ink hover:bg-cream lg:hidden"
+            onClick={() => setOpen((o) => !o)}
+            aria-label="Menu"
+            aria-expanded={open}
+          >
+            <span className="text-2xl leading-none">{open ? "✕" : "☰"}</span>
+          </button>
         </div>
-
-        {/* Mobile toggle */}
-        <button
-          className="ml-auto flex h-10 w-10 items-center justify-center rounded-xl text-ink hover:bg-lavender/40 lg:hidden"
-          onClick={() => setOpen((o) => !o)}
-          aria-label="Menu"
-          aria-expanded={open}
-        >
-          <span className="text-2xl leading-none">{open ? "✕" : "☰"}</span>
-        </button>
       </nav>
 
-      {/* Mobile panel */}
+      {/* Mobile menu */}
       {open && (
-        <div className="border-t border-lavender/40 bg-cream/95 px-4 py-3 lg:hidden">
-          <SearchBar big />
-          <ul className="mt-3 space-y-1">
-            {[...NAV, ...MORE].map((l) => (
-              <li key={l.href}>
-                <a
-                  href={l.href}
-                  onClick={() => setOpen(false)}
-                  className="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink-soft hover:bg-lavender/30 hover:text-soft-pink-deep"
-                >
-                  {l.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-          <Link
-            href="/admin/login"
-            onClick={() => setOpen(false)}
-            className="mt-3 block rounded-full bg-ink px-5 py-2.5 text-center text-sm font-semibold text-white"
-          >
-            Log in
-          </Link>
-        </div>
+        <ul className="border-t border-lavender/40 bg-white/95 px-4 py-3 lg:hidden">
+          {NAV.map((l) => (
+            <li key={l.href}>
+              <Link
+                href={l.href}
+                onClick={() => setOpen(false)}
+                className={`block rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
+                  isActive(l.href)
+                    ? "bg-soft-pink/25 text-soft-pink-deep"
+                    : "text-ink-soft hover:bg-cream"
+                }`}
+              >
+                {l.label}
+              </Link>
+            </li>
+          ))}
+          <li>
+            <Link
+              href="/favorites"
+              onClick={() => setOpen(false)}
+              className="mt-2 block rounded-full bg-soft-pink-deep px-4 py-2.5 text-center text-sm font-semibold text-white"
+            >
+              ♥ My Favorites
+            </Link>
+          </li>
+        </ul>
       )}
     </header>
   );

@@ -231,6 +231,129 @@ export async function getStoryPhotos(): Promise<StorySlide[]> {
   }
 }
 
+export interface GalleryPhotoItem {
+  id: string;
+  imageUrl: string;
+  caption?: string;
+  monthNumber: number;
+  monthTitle: string;
+}
+
+/** Every photo in the album, journey order (for /gallery). */
+export async function getAllPhotos(): Promise<GalleryPhotoItem[]> {
+  try {
+    const rows = await prisma.gallery.findMany({
+      orderBy: [{ month: { monthNumber: "asc" } }, { sortOrder: "asc" }],
+      select: {
+        id: true,
+        imageUrl: true,
+        caption: true,
+        month: { select: { monthNumber: true, title: true } },
+      },
+    });
+    return rows.map((r) => ({
+      id: r.id,
+      imageUrl: r.imageUrl,
+      caption: r.caption ?? undefined,
+      monthNumber: r.month.monthNumber,
+      monthTitle: r.month.title,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+/** Starred photos (for /favorites). */
+export async function getFavouritePhotos(): Promise<GalleryPhotoItem[]> {
+  try {
+    const rows = await prisma.gallery.findMany({
+      where: { featured: true },
+      orderBy: [{ month: { monthNumber: "asc" } }, { sortOrder: "asc" }],
+      select: {
+        id: true,
+        imageUrl: true,
+        caption: true,
+        month: { select: { monthNumber: true, title: true } },
+      },
+    });
+    return rows.map((r) => ({
+      id: r.id,
+      imageUrl: r.imageUrl,
+      caption: r.caption ?? undefined,
+      monthNumber: r.month.monthNumber,
+      monthTitle: r.month.title,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export interface MilestoneItem {
+  id: string;
+  title: string;
+  description?: string;
+  icon?: string;
+  monthNumber: number;
+  monthTitle: string;
+}
+
+/** Every milestone across the year (for /milestones). */
+export async function getAllMilestones(): Promise<MilestoneItem[]> {
+  try {
+    const rows = await prisma.milestone.findMany({
+      orderBy: [{ month: { monthNumber: "asc" } }, { createdAt: "asc" }],
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        icon: true,
+        month: { select: { monthNumber: true, title: true } },
+      },
+    });
+    return rows.map((r) => ({
+      id: r.id,
+      title: r.title,
+      description: r.description ?? undefined,
+      icon: r.icon ?? undefined,
+      monthNumber: r.month.monthNumber,
+      monthTitle: r.month.title,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export interface RecentMoment {
+  monthNumber: number;
+  title: string;
+  coverImage?: string;
+  photoCount: number;
+}
+
+/** Months with photos, newest first (for the homepage "Recent Moments" row). */
+export async function getRecentMoments(limit = 4): Promise<RecentMoment[]> {
+  try {
+    const months = await prisma.month.findMany({
+      orderBy: { monthNumber: "desc" },
+      include: {
+        _count: { select: { gallery: true } },
+        gallery: { orderBy: { sortOrder: "asc" }, take: 1, select: { imageUrl: true } },
+      },
+    });
+    return months
+      .filter((m) => m._count.gallery > 0)
+      .slice(0, limit)
+      .map((m) => ({
+        monthNumber: m.monthNumber,
+        title: m.title,
+        coverImage: m.gallery[0]?.imageUrl,
+        photoCount: m._count.gallery,
+      }));
+  } catch {
+    return [];
+  }
+}
+
 export interface FamilyMember {
   id: string;
   name: string;
