@@ -33,55 +33,10 @@ export default function Hero({
 
   return (
     <section className="px-3 pt-4 sm:px-6">
-      <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-cream-deep via-cream to-soft-pink/20 shadow-sm ring-1 ring-lavender/30">
-        {/* Decorations */}
-        <span className="pointer-events-none absolute left-6 top-4 text-2xl opacity-70" aria-hidden>
-          🎊
-        </span>
-        <span className="pointer-events-none absolute left-1/3 top-8 text-sm text-soft-pink-deep/60" aria-hidden>
-          ✦
-        </span>
-        <span className="pointer-events-none absolute bottom-8 left-10 text-xs text-lavender-deep/60" aria-hidden>
-          ✦
-        </span>
-
-        <div className="grid items-center gap-6 md:grid-cols-2">
-          {/* Left: copy */}
-          <div className="relative z-10 px-7 pb-8 pt-12 text-center md:pl-12 md:text-left">
-            <p className="text-lg font-medium text-ink-soft">Welcome to</p>
-            <h1 className="mt-1 font-hand text-5xl font-bold leading-tight text-soft-pink-deep sm:text-6xl">
-              My Little World
-              <span className="ml-2 inline-block align-middle text-2xl" aria-hidden>
-                ♥
-              </span>
-            </h1>
-
-            <div className="mt-3 flex items-center justify-center gap-2 md:justify-start">
-              <span className="h-px w-10 bg-lavender-deep/50" />
-              <span className="text-sm text-soft-pink-deep" aria-hidden>
-                ♥
-              </span>
-              <span className="h-px w-10 bg-lavender-deep/50" />
-            </div>
-
-            <p className="mx-auto mt-4 max-w-sm text-ink-soft md:mx-0">
-              {baby?.tagline ??
-                "Every smile, every giggle, every tiny step… these are the moments we live for."}
-            </p>
-
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-3 md:justify-start">
-              <Link
-                href="/gallery"
-                className="inline-flex items-center gap-2 rounded-full bg-soft-pink-deep px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-soft-pink/40 transition-transform hover:scale-105"
-              >
-                <span aria-hidden>🖼️</span> Explore Memories
-              </Link>
-              <JourneyStory slides={story} audioUrl={audioUrl} babyName={baby?.name} />
-            </div>
-          </div>
-
-          {/* Right: rotating photo */}
-          <div className="relative h-64 w-full overflow-hidden sm:h-80 md:h-[26rem]">
+      <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-gradient-to-b from-cream-deep via-cream to-soft-pink/15 shadow-sm ring-1 ring-lavender/30 md:bg-gradient-to-br">
+        <div className="grid md:grid-cols-2 md:items-center">
+          {/* Photo — first on mobile, right on desktop */}
+          <div className="relative order-1 h-72 w-full overflow-hidden sm:h-96 md:order-2 md:h-[27rem]">
             <AnimatePresence mode="sync">
               {banners.length > 0 && (
                 <motion.div
@@ -102,21 +57,65 @@ export default function Hero({
                 </motion.div>
               )}
             </AnimatePresence>
-            {/* Blend the photo into the card on the left edge */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-cream via-cream/25 to-transparent md:from-cream md:via-cream/40" />
-            {/* Cloud + stars */}
-            <span className="pointer-events-none absolute right-5 top-5 text-3xl opacity-80" aria-hidden>
+            {/* Blend into the card: bottom on mobile, left on desktop */}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-cream via-cream/15 to-transparent md:hidden" />
+            <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-cream via-cream/35 to-transparent md:block" />
+
+            {/* Decorations */}
+            <span className="pointer-events-none absolute left-4 top-4 text-3xl opacity-90 md:right-6 md:left-auto" aria-hidden>
               ☁️
             </span>
-            <span className="pointer-events-none absolute right-16 top-16 text-xs text-soft-pink-deep/70" aria-hidden>
-              ✦
+            <span className="pointer-events-none absolute left-12 top-20 text-sm text-amber-300" aria-hidden>
+              ★
             </span>
+            <span className="pointer-events-none absolute right-8 top-24 text-sm text-amber-300" aria-hidden>
+              ★
+            </span>
+            <span className="pointer-events-none absolute right-6 top-1/2 text-4xl text-soft-pink-deep/70 md:hidden" aria-hidden>
+              ♡
+            </span>
+          </div>
+
+          {/* Copy — below photo on mobile, left on desktop */}
+          <div className="relative z-10 order-2 px-7 pb-9 pt-2 text-center md:order-1 md:pb-12 md:pl-12 md:pt-12 md:text-left">
+            <p className="text-lg font-medium text-ink">Welcome to</p>
+            <h1 className="mt-1 font-hand text-5xl font-bold leading-tight text-soft-pink-deep sm:text-6xl">
+              My Little World
+            </h1>
+
+            <div className="mt-2 flex items-center justify-center gap-2 md:justify-start">
+              <span className="h-px w-9 bg-lavender-deep/40" />
+              <span className="text-sm text-soft-pink-deep" aria-hidden>
+                ♥
+              </span>
+              <span className="h-px w-9 bg-lavender-deep/40" />
+            </div>
+
+            <p className="mx-auto mt-4 max-w-xs text-ink-soft md:mx-0 md:max-w-sm">
+              {baby?.tagline ??
+                "Every smile, every giggle, every tiny step… these are the moments we live for."}
+            </p>
+
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-3 md:justify-start">
+              <Link
+                href="/gallery"
+                className="inline-flex items-center gap-2 rounded-full bg-soft-pink-deep px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-soft-pink/40 transition-transform hover:scale-105"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <path d="m21 15-5-5L5 21" />
+                </svg>
+                Explore Memories
+              </Link>
+              <JourneyStory slides={story} audioUrl={audioUrl} babyName={baby?.name} />
+            </div>
           </div>
         </div>
 
         {/* Banner dots */}
         {banners.length > 1 && (
-          <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1.5">
+          <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1.5 md:bottom-4">
             {banners.slice(0, 8).map((_, i) => (
               <button
                 key={i}
