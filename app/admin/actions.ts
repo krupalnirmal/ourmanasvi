@@ -98,6 +98,13 @@ export async function saveGalleryPhoto(input: {
   refresh(input.monthNumber);
 }
 
+/** Star/unstar a photo → controls what shows on the homepage. */
+export async function setPhotoFeatured(id: string, monthNumber: number, value: boolean) {
+  await requireAuth();
+  await prisma.gallery.update({ where: { id }, data: { featured: value } });
+  refresh(monthNumber);
+}
+
 export async function deleteGalleryPhoto(id: string, publicId: string, monthNumber: number) {
   await requireAuth();
   await prisma.gallery.delete({ where: { id } });

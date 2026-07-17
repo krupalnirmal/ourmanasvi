@@ -11,6 +11,7 @@ import {
   deleteGalleryPhoto,
   deleteVideo,
   setVideoSlowMo,
+  setPhotoFeatured,
 } from "@/app/admin/actions";
 import Uploader from "@/components/admin/Uploader";
 import DeleteButton from "@/components/admin/DeleteButton";
@@ -92,16 +93,36 @@ export default async function MonthEditor({
 
       {/* Photos */}
       <section className={cardCls}>
-        <h2 className="mb-4 font-display text-xl font-semibold text-ink">
+        <h2 className="mb-1 font-display text-xl font-semibold text-ink">
           Photos <span className="text-ink-soft">({month.gallery.length})</span>
         </h2>
+        <p className="mb-4 text-sm text-ink-soft">
+          Tap ⭐ on a photo to feature it on the homepage (banner + Featured Moments).
+        </p>
         <Uploader monthId={month.id} monthNumber={month.monthNumber} kind="image" />
         {month.gallery.length > 0 && (
           <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {month.gallery.map((g) => (
-              <div key={g.id} className="overflow-hidden rounded-xl ring-1 ring-black/5">
+              <div key={g.id} className="relative overflow-hidden rounded-xl ring-1 ring-black/5">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={g.imageUrl} alt={g.caption ?? ""} className="aspect-square w-full object-cover" />
+                {/* Feature (star) toggle */}
+                <form
+                  action={setPhotoFeatured.bind(null, g.id, month.monthNumber, !g.featured)}
+                  className="absolute left-1.5 top-1.5"
+                >
+                  <button
+                    aria-label={g.featured ? "Unfeature photo" : "Feature photo"}
+                    title={g.featured ? "Featured on homepage" : "Feature on homepage"}
+                    className={`flex h-8 w-8 items-center justify-center rounded-full text-sm shadow-md ring-1 backdrop-blur-md transition-transform hover:scale-110 ${
+                      g.featured
+                        ? "bg-soft-pink-deep text-white ring-white/60"
+                        : "bg-white/80 text-ink-soft ring-white/60 hover:bg-white"
+                    }`}
+                  >
+                    {g.featured ? "⭐" : "☆"}
+                  </button>
+                </form>
                 <div className="flex items-center justify-between gap-1 bg-white/80 px-2 py-1.5">
                   <span className="truncate text-xs text-ink-soft">{g.caption || "—"}</span>
                   <DeleteButton

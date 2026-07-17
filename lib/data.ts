@@ -169,9 +169,25 @@ export interface FeaturedMoment {
   monthNumber: number;
 }
 
-/** Real photos to feature on the homepage (spread across months). */
+/**
+ * Photos to feature on the homepage. Parents' starred picks win; if nothing is
+ * starred we fall back to a selection spread across the album.
+ */
 export async function getFeaturedMoments(limit = 8): Promise<FeaturedMoment[]> {
   try {
+    const starred = await prisma.gallery.findMany({
+      where: { featured: true },
+      orderBy: [{ month: { monthNumber: "asc" } }, { sortOrder: "asc" }],
+      select: { imageUrl: true, month: { select: { monthNumber: true } } },
+      take: limit,
+    });
+    if (starred.length > 0) {
+      return starred.map((p) => ({
+        imageUrl: p.imageUrl,
+        monthNumber: p.month.monthNumber,
+      }));
+    }
+
     const photos = await prisma.gallery.findMany({
       orderBy: { createdAt: "desc" },
       select: { imageUrl: true, month: { select: { monthNumber: true } } },
