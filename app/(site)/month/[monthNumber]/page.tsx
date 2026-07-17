@@ -69,7 +69,7 @@ export default async function MonthPage({
             className={`relative mx-auto max-w-3xl text-center ${cover ? "text-white" : ""}`}
           >
             <Link
-              href="/#timeline"
+              href="/journey"
               className={`text-sm font-medium transition-colors ${
                 cover ? "text-white/80 hover:text-white" : "text-ink-soft hover:text-ink"
               }`}

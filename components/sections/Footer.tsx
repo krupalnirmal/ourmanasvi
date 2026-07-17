@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const LINKS = [
-  { href: "/#timeline", label: "Journey" },
+  { href: "/journey", label: "Journey" },
   { href: "/family", label: "Family" },
   { href: "/places", label: "Places" },
   { href: "/events", label: "Events" },
