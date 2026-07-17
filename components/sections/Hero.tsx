@@ -113,10 +113,10 @@ export default function Hero({
           </div>
         </div>
 
-        {/* Banner dots */}
-        {banners.length > 1 && (
+        {/* Banner dots (only while the row stays tidy) */}
+        {banners.length > 1 && banners.length <= 10 && (
           <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1.5 md:bottom-4">
-            {banners.slice(0, 8).map((_, i) => (
+            {banners.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setIdx(i)}

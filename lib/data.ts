@@ -175,9 +175,10 @@ export interface FeaturedMoment {
  */
 export async function getFeaturedMoments(limit = 8): Promise<FeaturedMoment[]> {
   try {
+    // featuredRank 1 = best, so the strongest photo leads the banner.
     const starred = await prisma.gallery.findMany({
       where: { featured: true },
-      orderBy: [{ month: { monthNumber: "asc" } }, { sortOrder: "asc" }],
+      orderBy: [{ featuredRank: "asc" }, { month: { monthNumber: "asc" } }],
       select: { imageUrl: true, month: { select: { monthNumber: true } } },
       take: limit,
     });

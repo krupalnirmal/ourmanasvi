@@ -98,10 +98,28 @@ export async function saveGalleryPhoto(input: {
   refresh(input.monthNumber);
 }
 
-/** Star/unstar a photo → controls what shows on the homepage. */
+/**
+ * Star/unstar a photo → controls what shows on the homepage.
+ * Newly starred photos go to the end of the banner order (featuredRank).
+ */
 export async function setPhotoFeatured(id: string, monthNumber: number, value: boolean) {
   await requireAuth();
-  await prisma.gallery.update({ where: { id }, data: { featured: value } });
+  if (value) {
+    const last = await prisma.gallery.findFirst({
+      where: { featured: true },
+      orderBy: { featuredRank: "desc" },
+      select: { featuredRank: true },
+    });
+    await prisma.gallery.update({
+      where: { id },
+      data: { featured: true, featuredRank: (last?.featuredRank ?? 0) + 1 },
+    });
+  } else {
+    await prisma.gallery.update({
+      where: { id },
+      data: { featured: false, featuredRank: null },
+    });
+  }
   refresh(monthNumber);
 }
 

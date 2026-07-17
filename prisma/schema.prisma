@@ -57,6 +57,7 @@ model Gallery {
   caption   String?
   sortOrder Int      @default(0)
   featured  Boolean  @default(false) // starred → shown on the homepage
+  featuredRank Int? // 1 = best; drives the homepage banner order
   createdAt DateTime @default(now())
 
   month Month @relation(fields: [monthId], references: [id], onDelete: Cascade)

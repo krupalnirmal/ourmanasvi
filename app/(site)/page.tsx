@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const [bannerPhotos, recent, story, baby] = await Promise.all([
-    getFeaturedMoments(10),
+    getFeaturedMoments(30),
     getRecentMoments(4),
     getStoryPhotos(),
     getBaby(),
