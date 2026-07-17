@@ -25,6 +25,7 @@ export default async function Home() {
           baby={baby}
           story={story}
           audioUrl={baby?.storyAudio}
+          bannerAudio={baby?.bannerAudio}
         />
 
         <QuickLinks />

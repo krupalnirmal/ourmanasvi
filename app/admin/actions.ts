@@ -232,6 +232,43 @@ export async function clearStoryAudio() {
   revalidatePath("/admin");
 }
 
+/* ── Homepage banner music ───────────────────────────────── */
+async function rehostAudio(url: string) {
+  const ours = `res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}`;
+  if (!/^https?:\/\//i.test(url) || url.includes(ours)) return url;
+  try {
+    const res = await cloudinary.uploader.upload(url, {
+      resource_type: "video",
+      folder: CLOUDINARY_FOLDER,
+      public_id: `banner-audio-${Date.now()}`,
+    });
+    return res.secure_url;
+  } catch {
+    return url;
+  }
+}
+
+export async function setBannerAudio(formData: FormData) {
+  await requireAuth();
+  const raw = String(formData.get("audioUrl") ?? "").trim();
+  if (!raw) return;
+  const audioUrl = await rehostAudio(raw);
+  const baby = await prisma.baby.findFirst();
+  if (!baby) return;
+  await prisma.baby.update({ where: { id: baby.id }, data: { bannerAudio: audioUrl } });
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
+
+export async function clearBannerAudio() {
+  await requireAuth();
+  const baby = await prisma.baby.findFirst();
+  if (!baby) return;
+  await prisma.baby.update({ where: { id: baby.id }, data: { bannerAudio: null } });
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
+
 /* ── Family ─────────────────────────────────────────────── */
 function str(fd: FormData, k: string) {
   return String(fd.get(k) ?? "").trim();

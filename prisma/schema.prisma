@@ -21,6 +21,7 @@ model Baby {
   firstBirthday DateTime?
   coverImage    String?
   storyAudio    String? // music for the "Watch our Journey" player
+  bannerAudio   String? // music for the homepage banner slideshow
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

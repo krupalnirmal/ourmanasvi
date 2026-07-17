@@ -2,7 +2,14 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { monthLabel } from "@/lib/months";
 import { banner } from "@/lib/cld";
-import { setHeroImage, clearHeroImage, setStoryAudio, clearStoryAudio } from "@/app/admin/actions";
+import {
+  setHeroImage,
+  clearHeroImage,
+  setStoryAudio,
+  clearStoryAudio,
+  setBannerAudio,
+  clearBannerAudio,
+} from "@/app/admin/actions";
 import ImagePicker from "@/components/admin/ImagePicker";
 import AudioPicker from "@/components/admin/AudioPicker";
 
@@ -105,6 +112,45 @@ export default async function AdminDashboard() {
           <form action={clearStoryAudio} className="mt-4">
             <button className="text-sm font-medium text-ink-soft underline hover:text-ink">
               Remove music
+            </button>
+          </form>
+        )}
+      </section>
+
+      {/* Homepage banner music */}
+      <section className="mt-6 rounded-3xl bg-white/80 p-6 shadow-sm ring-1 ring-lavender/40">
+        <h2 className="font-display text-xl font-semibold text-ink">Banner music 🎶</h2>
+        <p className="mt-1 text-sm text-ink-soft">
+          Optional song for the homepage banner. Visitors tap “Slide with music” to play it —
+          it never starts on its own.
+        </p>
+        <form action={setBannerAudio} className="mt-4 max-w-md space-y-3">
+          <AudioPicker current={baby?.bannerAudio ?? undefined} />
+          <button className="rounded-full bg-soft-pink-deep px-5 py-2 text-sm font-semibold text-white">
+            Set banner music
+          </button>
+        </form>
+
+        <div className="mt-5 max-w-md border-t border-lavender/40 pt-5">
+          <p className="mb-2 text-sm font-medium text-ink">Or paste an online audio link</p>
+          <form action={setBannerAudio} className="flex flex-col gap-2 sm:flex-row">
+            <input
+              name="audioUrl"
+              type="url"
+              placeholder="https://…/song.mp3"
+              required
+              className="flex-1 rounded-xl border border-lavender/60 bg-white px-3 py-2 text-sm outline-none focus:border-lavender-deep"
+            />
+            <button className="rounded-full bg-ink px-5 py-2 text-sm font-semibold text-white">
+              Set from link
+            </button>
+          </form>
+        </div>
+
+        {baby?.bannerAudio && (
+          <form action={clearBannerAudio} className="mt-4">
+            <button className="text-sm font-medium text-ink-soft underline hover:text-ink">
+              Remove banner music
             </button>
           </form>
         )}

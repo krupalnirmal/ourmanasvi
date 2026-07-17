@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { heroBanner } from "@/lib/cld";
@@ -14,22 +14,38 @@ export default function Hero({
   baby,
   story = [],
   audioUrl,
+  bannerAudio,
 }: {
   photos?: string[];
   baby?: BabyInfo | null;
   story?: StorySlide[];
   audioUrl?: string;
+  bannerAudio?: string;
 }) {
   const banners = baby?.coverImage
     ? [baby.coverImage, ...photos.filter((p) => p !== baby.coverImage)]
     : photos;
   const [idx, setIdx] = useState(0);
+  const [musicOn, setMusicOn] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     if (banners.length <= 1) return;
     const t = setInterval(() => setIdx((i) => (i + 1) % banners.length), ROTATE_MS);
     return () => clearInterval(t);
   }, [banners.length]);
+
+  // Music only ever starts from the user's tap (browsers require a gesture).
+  function toggleMusic() {
+    const a = audioRef.current;
+    if (!a) return;
+    if (musicOn) {
+      a.pause();
+      setMusicOn(false);
+    } else {
+      a.play().then(() => setMusicOn(true)).catch(() => {});
+    }
+  }
 
   return (
     <section className="px-3 pt-4 sm:px-6">
@@ -74,6 +90,23 @@ export default function Hero({
             <span className="pointer-events-none absolute right-6 top-1/2 text-4xl text-soft-pink-deep/70 md:hidden" aria-hidden>
               ♡
             </span>
+
+            {/* Slide with music */}
+            {bannerAudio && (
+              <>
+                <audio ref={audioRef} src={bannerAudio} loop preload="none" />
+                <button
+                  onClick={toggleMusic}
+                  aria-pressed={musicOn}
+                  className={`absolute bottom-3 right-3 z-10 inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-semibold shadow-md ring-1 ring-white/60 backdrop-blur-md transition-transform hover:scale-105 ${
+                    musicOn ? "bg-soft-pink-deep text-white" : "bg-white/85 text-ink"
+                  }`}
+                >
+                  <span aria-hidden>{musicOn ? "❚❚" : "♪"}</span>
+                  {musicOn ? "Music on" : "Slide with music"}
+                </button>
+              </>
+            )}
           </div>
 
           {/* Copy — below photo on mobile, left on desktop */}
