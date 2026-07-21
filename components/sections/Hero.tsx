@@ -166,7 +166,14 @@ export default function Hero({
             {/* Slide with music */}
             {bannerAudio && (
               <>
-                <audio ref={audioRef} src={bannerAudio} loop preload="auto" />
+                <audio
+                  ref={audioRef}
+                  src={bannerAudio}
+                  loop
+                  preload="auto"
+                  onPlay={() => setMusicOn(true)}
+                  onPause={() => setMusicOn(false)}
+                />
                 <button
                   onClick={toggleMusic}
                   aria-pressed={musicOn}

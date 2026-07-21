@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { cld } from "@/lib/cld";
 import { claimAudio, releaseAudio } from "@/lib/audio-bus";
@@ -33,11 +34,23 @@ export default function JourneyStory({
   const [playing, setPlaying] = useState(true);
   const [ended, setEnded] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [mounted, setMounted] = useState(false);
   const total = slides.length;
+
+  useEffect(() => setMounted(true), []);
+
+  /** Belt and braces: silence every other <audio> on the page. */
+  function silenceOthers() {
+    if (typeof document === "undefined") return;
+    document.querySelectorAll("audio").forEach((el) => {
+      if (el !== audioRef.current) el.pause();
+    });
+  }
 
   function playAudio() {
     const a = audioRef.current;
     if (!a) return;
+    silenceOthers();
     a.play()
       .then(() => {
         // Stops the banner music (or anything else) that was playing.
@@ -138,15 +151,19 @@ export default function JourneyStory({
       {/* Audio kept mounted so it can start on the click gesture */}
       {audioUrl && <audio ref={audioRef} src={audioUrl} loop preload="auto" />}
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.4 }}
-            className="fixed inset-0 z-[90] flex items-center justify-center bg-black"
-          >
+      {/* Rendered into <body> so it truly covers the viewport — a transformed
+          ancestor (framer-motion) would otherwise trap `fixed` positioning. */}
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {open && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.4 }}
+                className="fixed inset-0 z-[100] flex items-center justify-center bg-black"
+              >
             {!ended ? (
               <AnimatePresence mode="sync">
                 <motion.div
@@ -247,9 +264,11 @@ export default function JourneyStory({
                 {playing ? "❚❚" : "▶"}
               </button>
             )}
-          </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
     </>
   );
 }
