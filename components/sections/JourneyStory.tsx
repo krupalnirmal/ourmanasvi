@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cld } from "@/lib/cld";
+import { claimAudio, releaseAudio } from "@/lib/audio-bus";
 import { monthLabel } from "@/lib/months";
 import type { StorySlide } from "@/lib/data";
 
@@ -35,7 +36,14 @@ export default function JourneyStory({
   const total = slides.length;
 
   function playAudio() {
-    audioRef.current?.play?.().catch(() => {});
+    const a = audioRef.current;
+    if (!a) return;
+    a.play()
+      .then(() => {
+        // Stops the banner music (or anything else) that was playing.
+        claimAudio("story", () => a.pause());
+      })
+      .catch(() => {});
   }
 
   function start() {
@@ -53,12 +61,20 @@ export default function JourneyStory({
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
+    releaseAudio("story");
   }
 
   function togglePlay() {
     setPlaying((p) => {
       const next = !p;
-      if (audioRef.current) next ? playAudio() : audioRef.current.pause();
+      if (audioRef.current) {
+        if (next) {
+          playAudio();
+        } else {
+          audioRef.current.pause();
+          releaseAudio("story");
+        }
+      }
       return next;
     });
   }
@@ -89,7 +105,10 @@ export default function JourneyStory({
   }, [open, playing, i, ended, total]);
 
   useEffect(() => {
-    if (ended && audioRef.current) audioRef.current.pause();
+    if (ended && audioRef.current) {
+      audioRef.current.pause();
+      releaseAudio("story");
+    }
   }, [ended]);
 
   // Close on Escape.

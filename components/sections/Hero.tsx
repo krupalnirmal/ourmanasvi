@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { heroBanner } from "@/lib/cld";
+import { claimAudio, releaseAudio } from "@/lib/audio-bus";
 import type { BabyInfo, StorySlide } from "@/lib/data";
 import JourneyStory from "@/components/sections/JourneyStory";
 
@@ -49,7 +50,16 @@ export default function Hero({
     const tryPlay = () => {
       const a = audioRef.current;
       if (!a || stoppedByUser.current || !inView.current) return;
-      a.play().then(() => setMusicOn(true)).catch(() => {});
+      a.play()
+        .then(() => {
+          setMusicOn(true);
+          // Anything else playing (e.g. the story player) stops.
+          claimAudio("banner", () => {
+            a.pause();
+            setMusicOn(false);
+          });
+        })
+        .catch(() => {});
     };
 
     tryPlay(); // works if the browser already trusts this site
@@ -69,6 +79,7 @@ export default function Hero({
           if (!a) return;
           if (!entry.isIntersecting) {
             a.pause();
+            releaseAudio("banner");
             setMusicOn(false);
           } else {
             tryPlay();
@@ -91,11 +102,20 @@ export default function Hero({
     if (!a) return;
     if (musicOn) {
       a.pause();
+      releaseAudio("banner");
       stoppedByUser.current = true; // don't auto-resume after a manual stop
       setMusicOn(false);
     } else {
       stoppedByUser.current = false;
-      a.play().then(() => setMusicOn(true)).catch(() => {});
+      a.play()
+        .then(() => {
+          setMusicOn(true);
+          claimAudio("banner", () => {
+            a.pause();
+            setMusicOn(false);
+          });
+        })
+        .catch(() => {});
     }
   }
 
