@@ -407,16 +407,76 @@ export interface EventItem {
   description?: string;
   date?: string;
   imageUrl?: string;
+  mediaCount?: number;
 }
 export async function getEvents(): Promise<EventItem[]> {
   try {
-    const rows = await prisma.festival.findMany({ orderBy: { createdAt: "asc" } });
+    const rows = await prisma.festival.findMany({
+      orderBy: [{ date: "asc" }, { createdAt: "asc" }],
+      include: { _count: { select: { media: true } } },
+    });
     return rows.map((r) => ({
       id: r.id,
       name: r.name,
       description: r.description ?? undefined,
       date: r.date?.toISOString() ?? undefined,
       imageUrl: r.imageUrl ?? undefined,
+      mediaCount: r._count.media,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export interface MediaItem {
+  id: string;
+  kind: "image" | "video";
+  url: string;
+  thumbnail?: string;
+  caption?: string;
+}
+
+export interface EventDetail extends EventItem {
+  media: MediaItem[];
+}
+
+/** One event with its full gallery (for /events/[id]). */
+export async function getEventDetail(id: string): Promise<EventDetail | null> {
+  try {
+    const r = await prisma.festival.findUnique({
+      where: { id },
+      include: { media: { orderBy: { sortOrder: "asc" } } },
+    });
+    if (!r) return null;
+    return {
+      id: r.id,
+      name: r.name,
+      description: r.description ?? undefined,
+      date: r.date?.toISOString() ?? undefined,
+      imageUrl: r.imageUrl ?? undefined,
+      media: r.media.map((m) => ({
+        id: m.id,
+        kind: m.kind === "video" ? "video" : "image",
+        url: m.url,
+        thumbnail: m.thumbnail ?? undefined,
+        caption: m.caption ?? undefined,
+      })),
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** Media for the standalone Funny page. */
+export async function getFunMedia(): Promise<MediaItem[]> {
+  try {
+    const rows = await prisma.funMedia.findMany({ orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }] });
+    return rows.map((m) => ({
+      id: m.id,
+      kind: m.kind === "video" ? "video" : "image",
+      url: m.url,
+      thumbnail: m.thumbnail ?? undefined,
+      caption: m.caption ?? undefined,
     }));
   } catch {
     return [];

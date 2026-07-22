@@ -139,4 +139,35 @@ model Festival {
   imageUrl    String?
   publicId    String?
   createdAt   DateTime @default(now())
+
+  media EventMedia[]
+}
+
+// Photos/videos belonging to an event (each event has its own gallery page).
+model EventMedia {
+  id         String   @id @default(cuid())
+  festivalId String
+  kind       String // "image" | "video"
+  url        String
+  publicId   String
+  thumbnail  String?
+  caption    String?
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  festival Festival @relation(fields: [festivalId], references: [id], onDelete: Cascade)
+
+  @@index([festivalId])
+}
+
+// The "Funny" page's media.
+model FunMedia {
+  id        String   @id @default(cuid())
+  kind      String // "image" | "video"
+  url       String
+  publicId  String
+  thumbnail String?
+  caption   String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
 }
