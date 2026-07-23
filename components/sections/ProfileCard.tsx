@@ -53,7 +53,12 @@ export default function ProfileCard({
         </div>
       </div>
 
-      <ul className="relative mt-6 space-y-2.5 text-sm text-ink-soft">
+      <p className="relative mt-4 font-hand text-2xl leading-snug text-ink">
+        One year of giggles, first steps and a heart full of love — this is my
+        little story, written smile by smile. 💕
+      </p>
+
+      <ul className="relative mt-4 space-y-2.5 text-sm text-ink-soft">
         {baby?.birthDate && (
           <li className="flex items-center gap-2">
             <span aria-hidden>📅</span> Born on {fmt(baby.birthDate)}
