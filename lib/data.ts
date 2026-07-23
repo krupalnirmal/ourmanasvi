@@ -123,6 +123,7 @@ export interface BabyInfo {
   birthDate?: string;
   firstBirthday?: string;
   coverImage?: string;
+  profilePhoto?: string;
   storyAudio?: string;
   bannerAudio?: string;
 }
@@ -137,6 +138,7 @@ export async function getBaby(): Promise<BabyInfo | null> {
       birthDate: baby.birthDate?.toISOString() ?? undefined,
       firstBirthday: baby.firstBirthday?.toISOString() ?? undefined,
       coverImage: baby.coverImage ?? undefined,
+      profilePhoto: baby.profilePhoto ?? undefined,
       storyAudio: baby.storyAudio ?? undefined,
       bannerAudio: baby.bannerAudio ?? undefined,
     };

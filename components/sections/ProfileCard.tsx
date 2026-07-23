@@ -20,7 +20,7 @@ export default function ProfileCard({
   baby?: BabyInfo | null;
   avatar?: string;
 }) {
-  const photo = baby?.coverImage || avatar;
+  const photo = baby?.profilePhoto || baby?.coverImage || avatar;
 
   return (
     <div className="relative h-full overflow-hidden rounded-3xl bg-gradient-to-br from-cream-deep via-cream to-lavender/25 p-6 shadow-sm ring-1 ring-lavender/30">
