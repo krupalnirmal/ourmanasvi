@@ -171,6 +171,21 @@ export interface FeaturedMoment {
   monthNumber: number;
 }
 
+/** Hand-picked wide photos for the hero banner (rank order); featured fallback. */
+export async function getBannerPhotos(): Promise<string[]> {
+  try {
+    const rows = await prisma.bannerPhoto.findMany({
+      orderBy: { rank: "asc" },
+      select: { url: true },
+    });
+    if (rows.length > 0) return rows.map((r) => r.url);
+    const feat = await getFeaturedMoments(10);
+    return feat.map((f) => f.imageUrl);
+  } catch {
+    return [];
+  }
+}
+
 /**
  * Photos to feature on the homepage. Parents' starred picks win; if nothing is
  * starred we fall back to a selection spread across the album.

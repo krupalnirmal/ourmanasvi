@@ -160,6 +160,15 @@ model EventMedia {
   @@index([festivalId])
 }
 
+// Hand-picked wide photos for the homepage hero banner (rank 1 shows first).
+model BannerPhoto {
+  id        String   @id @default(cuid())
+  url       String
+  publicId  String
+  rank      Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
 // The "Funny" page's media.
 model FunMedia {
   id        String   @id @default(cuid())

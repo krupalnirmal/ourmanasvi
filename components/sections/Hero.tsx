@@ -135,24 +135,14 @@ export default function Hero({
                   transition={{ duration: 1.2, ease: "easeInOut" }}
                   className="absolute inset-0"
                 >
-                  {/* Blurred fill behind (crop is fine when blurred) */}
+                  {/* Hand-picked wide photos → a clean full-bleed banner */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={cld(banners[idx], "w_900,h_700,c_fill,q_auto,f_auto,e_blur:1200")}
+                    src={cld(banners[idx], "w_1800,h_1100,c_fill,g_auto,q_auto,f_auto")}
                     alt=""
                     aria-hidden
-                    className="animate-kenburns-soft absolute inset-0 h-full w-full scale-110 object-cover"
+                    className="animate-kenburns-soft h-full w-full object-cover object-center"
                   />
-                  {/* Full photo, never cropped — Manasvi always fully visible */}
-                  <div className="absolute inset-0 flex items-center justify-center p-2 sm:p-3">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={cld(banners[idx], "w_1400,h_1400,c_limit,q_auto,f_auto")}
-                      alt=""
-                      aria-hidden
-                      className="max-h-full max-w-full rounded-xl object-contain shadow-lg"
-                    />
-                  </div>
                 </motion.div>
               )}
             </AnimatePresence>

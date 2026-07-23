@@ -3,14 +3,14 @@ import Hero from "@/components/sections/Hero";
 import QuickLinks from "@/components/sections/QuickLinks";
 import RecentMoments from "@/components/sections/RecentMoments";
 import ProfileCard from "@/components/sections/ProfileCard";
-import { getFeaturedMoments, getRecentMoments, getStoryPhotos, getBaby } from "@/lib/data";
+import { getBannerPhotos, getRecentMoments, getStoryPhotos, getBaby } from "@/lib/data";
 
 // Reflect admin edits immediately.
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const [bannerPhotos, recent, story, baby] = await Promise.all([
-    getFeaturedMoments(30),
+    getBannerPhotos(),
     getRecentMoments(4),
     getStoryPhotos(),
     getBaby(),
@@ -21,7 +21,7 @@ export default async function Home() {
       <LoadingScreen />
       <main className="flex-1 bg-cream pb-6">
         <Hero
-          photos={bannerPhotos.map((f) => f.imageUrl)}
+          photos={bannerPhotos}
           baby={baby}
           story={story}
           audioUrl={baby?.storyAudio}
@@ -34,7 +34,7 @@ export default async function Home() {
         <section className="px-3 pt-4 sm:px-6">
           <div className="mx-auto grid max-w-7xl gap-4 lg:grid-cols-[2fr_1fr]">
             <RecentMoments moments={recent} />
-            <ProfileCard baby={baby} avatar={bannerPhotos[0]?.imageUrl} />
+            <ProfileCard baby={baby} avatar={bannerPhotos[0]} />
           </div>
         </section>
       </main>
