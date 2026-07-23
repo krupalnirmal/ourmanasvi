@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { heroBanner } from "@/lib/cld";
+import { cld } from "@/lib/cld";
 import { claimAudio, releaseAudio } from "@/lib/audio-bus";
 import type { BabyInfo, StorySlide } from "@/lib/data";
 import JourneyStory from "@/components/sections/JourneyStory";
@@ -135,19 +135,30 @@ export default function Hero({
                   transition={{ duration: 1.2, ease: "easeInOut" }}
                   className="absolute inset-0"
                 >
+                  {/* Blurred fill behind (crop is fine when blurred) */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={heroBanner(banners[idx])}
+                    src={cld(banners[idx], "w_900,h_700,c_fill,q_auto,f_auto,e_blur:1200")}
                     alt=""
                     aria-hidden
-                    className="animate-kenburns-soft h-full w-full object-cover object-center"
+                    className="animate-kenburns-soft absolute inset-0 h-full w-full scale-110 object-cover"
                   />
+                  {/* Full photo, never cropped — Manasvi always fully visible */}
+                  <div className="absolute inset-0 flex items-center justify-center p-2 sm:p-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={cld(banners[idx], "w_1400,h_1400,c_limit,q_auto,f_auto")}
+                      alt=""
+                      aria-hidden
+                      className="max-h-full max-w-full rounded-xl object-contain shadow-lg"
+                    />
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
-            {/* Blend into the card: bottom on mobile, left on desktop */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-cream via-cream/15 to-transparent md:hidden" />
-            <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-cream via-cream/35 to-transparent md:block" />
+            {/* Soft seam into the card: only the very edge, photo stays clear */}
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-cream to-transparent md:hidden" />
+            <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-16 bg-gradient-to-r from-cream to-transparent md:block" />
 
             {/* Decorations */}
             <span className="pointer-events-none absolute left-4 top-4 text-3xl opacity-90 md:right-6 md:left-auto" aria-hidden>

@@ -18,6 +18,9 @@ const ROOT = path.join(__dirname, "..", "data_for_upload");
 const STATE_FILE = path.join(__dirname, "..", ".migrate-state.json");
 const FOLDER = "ourmanasvi/album";
 const MAX_VIDEO = 95 * 1024 * 1024;
+// SKIP_VIDEOS=1 → upload photos only; videos already uploaded are still used,
+// missing ones are simply left out (rerun without the flag to add them later).
+const SKIP_VIDEOS = process.env.SKIP_VIDEOS === "1";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -148,7 +151,12 @@ async function uploadVideo(file) {
     src = tmp;
     console.log(`    transcoded ${(fs.statSync(file).size / 1048576) | 0}MB → ${(fs.statSync(tmp).size / 1048576) | 0}MB`);
   }
-  const r = await upLarge(src, { folder: FOLDER, resource_type: "video", chunk_size: 20 * 1024 * 1024 });
+  const r = await upLarge(src, {
+    folder: FOLDER,
+    resource_type: "video",
+    chunk_size: 10 * 1024 * 1024, // smaller chunks — survive flaky links better
+    timeout: 600000, // 10 min per request instead of the default 60s
+  });
   if (tmp) fs.unlinkSync(tmp);
   const thumbnail = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/video/upload/so_0/${r.public_id}.jpg`;
   return { url: r.secure_url, publicId: r.public_id, thumbnail };
@@ -169,6 +177,7 @@ async function main() {
   console.log(`Resuming: ${done}/${entries.length} already uploaded`);
   for (const [hash, item] of entries) {
     if (state[hash]) continue;
+    if (SKIP_VIDEOS && item.kind === "video") continue;
     const label = path.relative(ROOT, item.path);
     try {
       const res = item.kind === "image" ? await uploadImage(item.path) : await uploadVideo(item.path);
@@ -180,11 +189,15 @@ async function main() {
       console.log(`FAIL ${label}: ${e?.error?.message || e.message}`);
     }
   }
-  const missing = entries.filter(([h]) => !state[h]).length;
+  const missing = entries.filter(
+    ([h, item]) => !state[h] && !(SKIP_VIDEOS && item.kind === "video")
+  ).length;
+  const skippedVids = entries.filter(([h, item]) => !state[h] && item.kind === "video").length;
   if (missing) {
     console.log(`UPLOADS INCOMPLETE: ${missing} failed — rerun the script to retry. DB phase skipped.`);
     return;
   }
+  if (skippedVids) console.log(`(${skippedVids} videos skipped — add them later by rerunning without SKIP_VIDEOS)`);
 
   // Phase 2 — DB (idempotent: wipe + insert)
   console.log("Inserting DB rows…");
@@ -198,9 +211,11 @@ async function main() {
   const monthId = Object.fromEntries(months.map((m) => [m.monthNumber, m.id]));
 
   // months + best (photos may belong to several months; best sets featured)
-  let g = 0, v = 0;
+  const galleryRows = [];
+  const videoRows = [];
   for (const [hash, item] of entries) {
     const up = state[hash];
+    if (!up) continue; // skipped (video-only run)
     const monthTargets = new Map(); // n -> {order, rank?}
     for (const t of item.targets) {
       if (t.type === "month") {
@@ -214,22 +229,21 @@ async function main() {
     for (const [n, info] of monthTargets) {
       if (monthId[n] === undefined) continue;
       if (up.kind === "image") {
-        await prisma.gallery.create({
-          data: {
-            monthId: monthId[n], imageUrl: up.url, publicId: up.publicId,
-            featured: info.rank !== undefined, featuredRank: info.rank ?? null,
-          },
+        galleryRows.push({
+          monthId: monthId[n], imageUrl: up.url, publicId: up.publicId,
+          featured: info.rank !== undefined, featuredRank: info.rank ?? null,
         });
-        g++;
       } else {
-        await prisma.video.create({
-          data: { monthId: monthId[n], videoUrl: up.url, publicId: up.publicId, thumbnail: up.thumbnail },
-        });
-        v++;
+        videoRows.push({ monthId: monthId[n], videoUrl: up.url, publicId: up.publicId, thumbnail: up.thumbnail });
       }
     }
   }
-  console.log(`months: ${g} photos, ${v} videos`);
+  // Batched inserts (few round trips → survives flaky connections)
+  for (let i = 0; i < galleryRows.length; i += 100)
+    await prisma.gallery.createMany({ data: galleryRows.slice(i, i + 100) });
+  for (let i = 0; i < videoRows.length; i += 100)
+    await prisma.video.createMany({ data: videoRows.slice(i, i + 100) });
+  console.log(`months: ${galleryRows.length} photos, ${videoRows.length} videos`);
 
   // events
   const eventNames = new Map(); // name -> [{hash, order}]
@@ -239,36 +253,36 @@ async function main() {
         if (!eventNames.has(t.name)) eventNames.set(t.name, []);
         eventNames.get(t.name).push({ hash, order: t.order });
       }
-  for (const [name, files] of eventNames) {
+  for (const [name, files0] of eventNames) {
+    const files = files0.filter((f) => state[f.hash]); // drop skipped videos
+    if (files.length === 0) continue;
     files.sort((a, b) => a.order - b.order);
     const cover = files.map((f) => state[f.hash]).find((u) => u.kind === "image");
     const fest = await prisma.festival.create({
       data: { name: name.replace(/\s*-\s*\d.*$/, "").replace(/\(.*\)$/, "").trim() || name,
         date: parseEventDate(name), imageUrl: cover?.url ?? null, publicId: cover?.publicId ?? null },
     });
-    let i = 0;
-    for (const f of files) {
-      const up = state[f.hash];
-      await prisma.eventMedia.create({
-        data: { festivalId: fest.id, kind: up.kind, url: up.url, publicId: up.publicId,
-          thumbnail: up.thumbnail ?? null, sortOrder: i++ },
-      });
-    }
+    await prisma.eventMedia.createMany({
+      data: files.map((f, i) => {
+        const up = state[f.hash];
+        return { festivalId: fest.id, kind: up.kind, url: up.url, publicId: up.publicId,
+          thumbnail: up.thumbnail ?? null, sortOrder: i };
+      }),
+    });
     console.log(`event "${name}": ${files.length} items`);
   }
 
   // funny
-  let f = 0;
+  const funRows = [];
   for (const [hash, item] of entries)
     for (const t of item.targets)
       if (t.type === "fun") {
         const up = state[hash];
-        await prisma.funMedia.create({
-          data: { kind: up.kind, url: up.url, publicId: up.publicId, thumbnail: up.thumbnail ?? null, sortOrder: t.order },
-        });
-        f++;
+        if (!up) continue; // skipped video
+        funRows.push({ kind: up.kind, url: up.url, publicId: up.publicId, thumbnail: up.thumbnail ?? null, sortOrder: t.order });
       }
-  console.log(`funny: ${f} items`);
+  if (funRows.length) await prisma.funMedia.createMany({ data: funRows });
+  console.log(`funny: ${funRows.length} items`);
 
   console.log("MIGRATION DONE ✅");
 }
