@@ -8,7 +8,8 @@ import { claimAudio, releaseAudio } from "@/lib/audio-bus";
 import type { BabyInfo, StorySlide } from "@/lib/data";
 import JourneyStory from "@/components/sections/JourneyStory";
 
-const ROTATE_MS = 5000;
+const ROTATE_MS = 4500;
+const BANNER_TX = "w_1800,h_1100,c_fill,g_auto,q_auto,f_auto";
 
 export default function Hero({
   photos = [],
@@ -27,6 +28,7 @@ export default function Hero({
     ? [baby.coverImage, ...photos.filter((p) => p !== baby.coverImage)]
     : photos;
   const [idx, setIdx] = useState(0);
+  const nextBanner = banners.length > 1 ? banners[(idx + 1) % banners.length] : undefined;
   const [musicOn, setMusicOn] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -38,6 +40,13 @@ export default function Hero({
     const t = setInterval(() => setIdx((i) => (i + 1) % banners.length), ROTATE_MS);
     return () => clearInterval(t);
   }, [banners.length]);
+
+  // Warm the next photo so each cross-fade lands on an already-decoded image.
+  useEffect(() => {
+    if (!nextBanner) return;
+    const img = new Image();
+    img.src = cld(nextBanner, BANNER_TX);
+  }, [nextBanner]);
 
   /**
    * Music: browsers block autoplay with sound until the visitor has interacted
@@ -138,7 +147,7 @@ export default function Hero({
                   {/* Hand-picked wide photos → a clean full-bleed banner */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={cld(banners[idx], "w_1800,h_1100,c_fill,g_auto,q_auto,f_auto")}
+                    src={cld(banners[idx], BANNER_TX)}
                     alt=""
                     aria-hidden
                     className="animate-kenburns-soft h-full w-full object-cover object-center"
@@ -226,16 +235,16 @@ export default function Hero({
           </div>
         </div>
 
-        {/* Banner dots (only while the row stays tidy) */}
-        {banners.length > 1 && banners.length <= 10 && (
-          <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1.5 md:bottom-4">
+        {/* Banner dots — tight enough that ~20 picks still read as one neat row */}
+        {banners.length > 1 && banners.length <= 24 && (
+          <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 md:bottom-4">
             {banners.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setIdx(i)}
                 aria-label={`Show banner photo ${i + 1}`}
                 className={`h-1.5 rounded-full transition-all ${
-                  i === idx ? "w-5 bg-soft-pink-deep" : "w-1.5 bg-ink-soft/30"
+                  i === idx ? "w-4 bg-soft-pink-deep" : "w-1.5 bg-ink-soft/30"
                 }`}
               />
             ))}
