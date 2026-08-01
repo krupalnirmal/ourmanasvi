@@ -5,6 +5,7 @@ import "./globals.css";
 import PWARegister from "@/components/PWARegister";
 import TopProgress from "@/components/TopProgress";
 import { BABY_NAME, BABY_POSSESSIVE, SITE_DESCRIPTION, pageTitle } from "@/lib/site-config";
+import { activePalette, themeCss } from "@/lib/theme";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -49,7 +50,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f2a7b8",
+  themeColor: activePalette().themeColor,
 };
 
 export default function RootLayout({
@@ -62,6 +63,10 @@ export default function RootLayout({
       lang="en"
       className={`${poppins.variable} ${playfair.variable} ${caveat.variable} h-full antialiased`}
     >
+      {/* Re-skins every component by redefining the Tailwind colour variables. */}
+      <head>
+        <style dangerouslySetInnerHTML={{ __html: themeCss() }} />
+      </head>
       <body className="min-h-full flex flex-col bg-[var(--background)] text-ink">
         <Suspense fallback={null}>
           <TopProgress />

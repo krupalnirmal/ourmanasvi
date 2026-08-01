@@ -18,6 +18,8 @@ Don't start until you have all of this — going back mid-setup wastes time.
 - [ ] Date of birth (`YYYY-MM-DD`)
 - [ ] First birthday date (`YYYY-MM-DD`)
 - [ ] Site name, or default to `Our<BabyName>`
+- [ ] Colour palette they want — `pink`, `blue`, `mint`, `peach` or `lavender`
+      (show them the demo site in each before they pick)
 - [ ] The email they want to own the accounts with — **and access to it**, since
       every signup needs a confirmation click
 - [ ] Do they want a paid custom domain, or is `<name>.vercel.app` fine?
@@ -69,6 +71,7 @@ Fill in `.env`:
 - [ ] `CLOUDINARY_FOLDER` — **unique per client**, e.g. `ouraarav`
 - [ ] `NEXT_PUBLIC_BABY_NAME`, `NEXT_PUBLIC_SITE_NAME`,
       `NEXT_PUBLIC_SITE_TAGLINE`, `NEXT_PUBLIC_FAMILY_NAME`
+- [ ] `SITE_THEME` — the palette they picked
 - [ ] `BABY_BIRTH_DATE`, `BABY_FIRST_BIRTHDAY`
 - [ ] `ADMIN_EMAIL`, `ADMIN_PASSWORD`
 - [ ] `AUTH_SECRET` — **generate a fresh one, never reuse across clients:**

@@ -1,9 +1,13 @@
 @import "tailwindcss";
 
 /*
-  OurManasvi theme — Minimal, Elegant, Emotional
+  Base theme — Minimal, Elegant, Emotional
   Palette: White · Cream · Soft Pink · Baby Blue · Lavender
   Fonts:   Poppins (body) · Playfair Display (headings) · Caveat (handwriting)
+
+  These are the DEFAULT (pink) values. Setting SITE_THEME in .env makes the root
+  layout inject a `:root` block that overrides them — see lib/theme.ts. Keep this
+  block in sync with PALETTES.pink so an unset SITE_THEME looks identical.
 */
 @theme {
   --color-cream: #fff8f0;

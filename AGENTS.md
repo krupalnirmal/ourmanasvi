@@ -51,5 +51,16 @@ config: `baby?.name ?? BABY_NAME`. Each site also needs its own `AUTH_SECRET`,
 - Data reads: `lib/data.ts` (DB with static fallback). Public pages are force-dynamic.
 
 ## Theme
-Colors: white, cream, soft-pink, baby-blue, lavender (defined in `app/globals.css`).
 Fonts: Poppins (body), Playfair Display (headings), Caveat (handwriting accents).
+
+Colour tokens (`soft-pink*`, `baby-blue*`, `lavender*`, `cream*`, `ink*`) are the
+default pink palette in `app/globals.css`. `SITE_THEME` in `.env` picks one of the
+palettes in `lib/theme.ts`, which the root layout injects as `:root` overrides —
+Tailwind v4 compiles `bg-soft-pink-deep` to `var(--color-soft-pink-deep)`, so
+redefining the variables re-skins everything.
+
+**Treat the token names as roles, not colours:** `soft-pink*` is the primary
+accent, `baby-blue*` the secondary, `lavender*` borders/rings. In the `blue`
+palette `soft-pink-deep` holds a blue. Never add a hardcoded hex to a component —
+add or edit a palette instead, and keep `PALETTES.pink` in sync with the defaults
+in `globals.css`.
