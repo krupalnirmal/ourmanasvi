@@ -43,6 +43,9 @@ yarn-error.log*
 *.mov
 *.MOV
 
+# marker written by scripts/generate-icons.mjs — local state, not source
+public/icons/.generated-by-script
+
 # vercel
 .vercel
 

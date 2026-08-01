@@ -32,6 +32,14 @@ config: `baby?.name ?? BABY_NAME`. Each site also needs its own `AUTH_SECRET`,
 - NextAuth v5 (single admin = parents, credentials from env)
 - Deploy target: Vercel Hobby
 
+## App icons
+`public/icons/*.png` have the site's name drawn into them, so they are the one
+thing `.env` cannot re-skin. `npm run icons` regenerates all four from
+`NEXT_PUBLIC_BABY_NAME` / `NEXT_PUBLIC_SITE_NAME` / `SITE_THEME`
+(`scripts/generate-icons.mjs`). Keep its `PALETTES` in step with `lib/theme.ts`.
+Hand-designed icons in that folder are overwritten by the script — don't run it
+on a site that has them.
+
 ## Local dev
 - **Node 22 required** (system default `node` is v10). Run:
   `export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"; nvm use 22.23.1`

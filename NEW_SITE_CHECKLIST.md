@@ -82,23 +82,35 @@ Fill in `.env`:
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ```
 
-### Replace the app icons — the one thing `.env` cannot do
+### Regenerate the app icons
 
 The four files in `public/icons/` are **images with the previous site's name
-drawn into them**. Nothing in `.env` touches them. Ship without redrawing these
-and the family gets another baby's name on their phone home screen.
+drawn into them**, so `.env` alone cannot re-skin them. Ship them unchanged and
+the family gets another baby's name on their phone home screen.
 
-- [ ] `icon-192.png` — 192×192, phone app icon
-- [ ] `icon-512.png` — 512×512, PWA splash screen
-- [ ] `icon-maskable-512.png` — 512×512, Android (keep art inside the middle
-      ~80%, Android crops the edges to a circle)
-- [ ] `apple-touch-icon.png` — 180×180, iPhone home screen
-- [ ] `public/favicon.ico` if present — browser tab
+Fill in `.env` first, then:
 
-Quickest route: open the existing icon in Canva or Figma, swap the name and
-initial, re-export at each size. About 10 minutes.
+```bash
+npm run icons
+```
 
-- [ ] Check the icons match the palette you picked in `SITE_THEME`
+That reads the name, site name and `SITE_THEME` you just set and rewrites all
+four files — wordmark, initial and colours to match.
+
+- [ ] `npm run icons` ran without errors
+- [ ] **Opened `public/icons/icon-512.png` and actually looked at it** — check the
+      name is spelled right and the initial is the correct letter
+- [ ] Long names (10+ characters) still fit inside the circle
+
+Want something better than the generated mark? Drop a designer's PNGs into
+`public/icons/` at the sizes below and don't run `npm run icons` again.
+
+| File | Size | Where it shows |
+|---|---|---|
+| `icon-192.png` | 192×192 | Phone app icon |
+| `icon-512.png` | 512×512 | PWA splash screen |
+| `icon-maskable-512.png` | 512×512 | Android — art must sit inside the middle ~80%, the launcher crops the rest |
+| `apple-touch-icon.png` | 180×180 | iPhone home screen |
 
 Then:
 
