@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BABY_NAME } from "@/lib/site-config";
+import { BABY_NAME, HEADER_SUBTITLE } from "@/lib/site-config";
 
 const NAV = [
   { href: "/", label: "Home" },
@@ -58,7 +58,7 @@ export default function SiteHeader() {
               {BABY_NAME}
             </span>
             <span className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.18em] text-ink-soft">
-              Forever Memories
+              {HEADER_SUBTITLE}
             </span>
           </span>
         </Link>

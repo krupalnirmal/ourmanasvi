@@ -7,6 +7,7 @@ import { cld } from "@/lib/cld";
 import { claimAudio, releaseAudio } from "@/lib/audio-bus";
 import type { BabyInfo, StorySlide } from "@/lib/data";
 import JourneyStory from "@/components/sections/JourneyStory";
+import { HERO_TITLE } from "@/lib/site-config";
 
 const ROTATE_MS = 4500;
 const BANNER_TX = "w_1800,h_1100,c_fill,g_auto,q_auto,f_auto";
@@ -202,7 +203,7 @@ export default function Hero({
           <div className="relative z-10 order-2 px-7 pb-9 pt-2 text-center md:order-1 md:pb-12 md:pl-12 md:pt-12 md:text-left">
             <p className="text-lg font-medium text-ink">Welcome to</p>
             <h1 className="mt-1 font-hand text-5xl font-bold leading-tight text-soft-pink-deep sm:text-6xl">
-              My Little World
+              {HERO_TITLE}
             </h1>
 
             <div className="mt-2 flex items-center justify-center gap-2 md:justify-start">

@@ -25,6 +25,14 @@ export const SITE_DESCRIPTION =
 export const FAMILY_NAME =
   process.env.NEXT_PUBLIC_FAMILY_NAME?.trim() || `${BABY_NAME}'s Family`;
 
+/** The big handwritten headline on the homepage hero. */
+export const HERO_TITLE =
+  process.env.NEXT_PUBLIC_HERO_TITLE?.trim() || "My Little World";
+
+/** Small caps line under the logo in the site header. */
+export const HEADER_SUBTITLE =
+  process.env.NEXT_PUBLIC_HEADER_SUBTITLE?.trim() || "Forever Memories";
+
 /**
  * Page title for a section, e.g. pageTitle("Gallery") → "Gallery — OurManasvi".
  * Call with no argument for the site's own title.

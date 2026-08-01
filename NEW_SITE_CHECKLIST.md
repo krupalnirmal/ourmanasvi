@@ -72,6 +72,8 @@ Fill in `.env`:
 - [ ] `NEXT_PUBLIC_BABY_NAME`, `NEXT_PUBLIC_SITE_NAME`,
       `NEXT_PUBLIC_SITE_TAGLINE`, `NEXT_PUBLIC_FAMILY_NAME`
 - [ ] `SITE_THEME` — the palette they picked
+- [ ] `NEXT_PUBLIC_HERO_TITLE` / `NEXT_PUBLIC_HEADER_SUBTITLE` — only if they want
+      wording other than "My Little World" / "Forever Memories"
 - [ ] `BABY_BIRTH_DATE`, `BABY_FIRST_BIRTHDAY`
 - [ ] `ADMIN_EMAIL`, `ADMIN_PASSWORD`
 - [ ] `AUTH_SECRET` — **generate a fresh one, never reuse across clients:**
@@ -79,6 +81,24 @@ Fill in `.env`:
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ```
+
+### Replace the app icons — the one thing `.env` cannot do
+
+The four files in `public/icons/` are **images with the previous site's name
+drawn into them**. Nothing in `.env` touches them. Ship without redrawing these
+and the family gets another baby's name on their phone home screen.
+
+- [ ] `icon-192.png` — 192×192, phone app icon
+- [ ] `icon-512.png` — 512×512, PWA splash screen
+- [ ] `icon-maskable-512.png` — 512×512, Android (keep art inside the middle
+      ~80%, Android crops the edges to a circle)
+- [ ] `apple-touch-icon.png` — 180×180, iPhone home screen
+- [ ] `public/favicon.ico` if present — browser tab
+
+Quickest route: open the existing icon in Canva or Figma, swap the name and
+initial, re-export at each size. About 10 minutes.
+
+- [ ] Check the icons match the palette you picked in `SITE_THEME`
 
 Then:
 
@@ -94,6 +114,8 @@ npm run dev        # check http://localhost:3000
 
 Check before deploying:
 - [ ] Baby's name shows in the header and footer — not "Baby"
+- [ ] Colours match the palette you picked
+- [ ] **No trace of the previous baby's name anywhere**, icons included
 - [ ] `/admin/login` accepts the admin email + password
 - [ ] Upload one photo in admin — proves the unsigned Cloudinary preset works
 
@@ -135,6 +157,7 @@ Not "it loaded" — actually check these:
 
 - [ ] Homepage header and footer show the baby's name, no "Baby" anywhere
 - [ ] Browser tab reads `<SiteName> — A Year of Firsts`
+- [ ] "Add to home screen" on a phone shows the **new** icon and name
 - [ ] `/admin/login` works with the real password
 - [ ] Upload a photo through admin, confirm it appears on the public page
 - [ ] Delete that test photo, confirm it disappears
