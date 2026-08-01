@@ -355,3 +355,71 @@ export async function deleteEvent(id: string, publicId?: string) {
   revalidatePath("/events");
   revalidatePath("/admin/events");
 }
+
+/* ── Funny page media (uploaded client-side to Cloudinary) ── */
+function refreshFunny() {
+  revalidatePath("/funny");
+  revalidatePath("/admin/funny");
+}
+
+export async function saveFunMedia(input: {
+  kind: "image" | "video";
+  url: string;
+  publicId: string;
+  thumbnail?: string;
+  caption?: string;
+}) {
+  await requireAuth();
+  const last = await prisma.funMedia.findFirst({
+    orderBy: { sortOrder: "desc" },
+    select: { sortOrder: true },
+  });
+  await prisma.funMedia.create({
+    data: {
+      kind: input.kind,
+      url: input.url,
+      publicId: input.publicId,
+      thumbnail: input.thumbnail || null,
+      caption: input.caption?.trim() || null,
+      sortOrder: (last?.sortOrder ?? -1) + 1,
+    },
+  });
+  refreshFunny();
+}
+
+export async function deleteFunMedia(id: string, publicId: string, kind: string) {
+  await requireAuth();
+  await prisma.funMedia.delete({ where: { id } });
+  try {
+    await deleteAsset(publicId, kind === "video" ? "video" : "image");
+  } catch {
+    // DB row already gone; ignore Cloudinary cleanup failures.
+  }
+  refreshFunny();
+}
+
+export async function updateFunMediaCaption(id: string, formData: FormData) {
+  await requireAuth();
+  await prisma.funMedia.update({
+    where: { id },
+    data: { caption: String(formData.get("caption") ?? "").trim() || null },
+  });
+  refreshFunny();
+}
+
+/** Move an item one slot earlier/later in the Funny grid. */
+export async function moveFunMedia(id: string, direction: "up" | "down") {
+  await requireAuth();
+  const all = await prisma.funMedia.findMany({
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+    select: { id: true },
+  });
+  const i = all.findIndex((m) => m.id === id);
+  const j = direction === "up" ? i - 1 : i + 1;
+  if (i === -1 || j < 0 || j >= all.length) return;
+  [all[i], all[j]] = [all[j], all[i]];
+  await prisma.$transaction(
+    all.map((m, idx) => prisma.funMedia.update({ where: { id: m.id }, data: { sortOrder: idx } }))
+  );
+  refreshFunny();
+}

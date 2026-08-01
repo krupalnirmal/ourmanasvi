@@ -162,6 +162,7 @@ export default async function AdminDashboard() {
           { href: "/admin/family", label: "👪 Family" },
           { href: "/admin/places", label: "📍 Places & Villages" },
           { href: "/admin/events", label: "🎉 Events & Photoshoots" },
+          { href: "/admin/funny", label: "😄 Funny Moments" },
         ].map((s) => (
           <Link
             key={s.href}
