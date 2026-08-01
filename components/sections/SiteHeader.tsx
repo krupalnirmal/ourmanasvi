@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { BABY_NAME } from "@/lib/site-config";
 
 const NAV = [
   { href: "/", label: "Home" },
@@ -54,7 +55,7 @@ export default function SiteHeader() {
           </span>
           <span className="flex flex-col items-center leading-none lg:items-start">
             <span className="font-hand text-2xl font-bold text-ink sm:text-3xl lg:text-2xl">
-              Manasvi
+              {BABY_NAME}
             </span>
             <span className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.18em] text-ink-soft">
               Forever Memories

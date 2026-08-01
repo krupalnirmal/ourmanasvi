@@ -11,7 +11,7 @@ cloudinary.config({
 export { cloudinary };
 
 /** Folder we keep all uploads under, so the free account stays tidy. */
-export const CLOUDINARY_FOLDER = "ourmanasvi";
+export const CLOUDINARY_FOLDER = process.env.CLOUDINARY_FOLDER?.trim() || "ourmanasvi";
 
 /** Delete an asset by its stored public_id (called when removing media). */
 export async function deleteAsset(

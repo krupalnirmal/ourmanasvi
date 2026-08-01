@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { getPlaces } from "@/lib/data";
 import StoryGrid from "@/components/ui/StoryGrid";
+import { pageTitle } from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Places — OurManasvi" };
+export const metadata: Metadata = { title: pageTitle("Places") };
 
 export default async function PlacesPage() {
   const places = await getPlaces();

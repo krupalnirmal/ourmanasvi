@@ -1,4 +1,5 @@
 import type { TimelineItem } from "@/types";
+import { BABY_NAME } from "@/lib/site-config";
 
 /**
  * Rich static content for each stop on the journey (birth → 12 months).
@@ -6,6 +7,9 @@ import type { TimelineItem } from "@/types";
  * complete and deployable BEFORE the database/Cloudinary are wired up.
  * When the DB is connected (Phase: persistence), these shapes map 1:1
  * onto the Prisma models (Month / Memory / Milestone / Gallery / Video).
+ *
+ * Keep this baby-agnostic — it ships as the fallback for every site, so the
+ * name comes from config rather than being written into the prose.
  */
 
 export interface MonthMemory {
@@ -35,7 +39,7 @@ export const MONTHS: MonthDetail[] = [
     subtitle: "Hello, world",
     accent: "cream",
     intro:
-      "The day everything changed. After all the waiting, Manasvi arrived — small, perfect, and impossibly loved.",
+      `The day everything changed. After all the waiting, ${BABY_NAME} arrived — small, perfect, and impossibly loved.`,
     gallery: [{ caption: "First held" }, { caption: "Tiny hands" }, { caption: "Going home" }],
     memories: [
       {
@@ -226,7 +230,7 @@ export const MONTHS: MonthDetail[] = [
     subtitle: "A whole year of love",
     accent: "cream",
     intro:
-      "One whole year. A year of firsts, of growing, of loving you more every single day. Happy birthday, Manasvi.",
+      `One whole year. A year of firsts, of growing, of loving you more every single day. Happy birthday, ${BABY_NAME}.`,
     gallery: [{ caption: "The big day" }, { caption: "Cake smash" }, { caption: "One year old!" }],
     memories: [
       { title: "Cake smash", content: "Zero hesitation. Both hands straight into the cake. Perfect.", mood: "🎂" },

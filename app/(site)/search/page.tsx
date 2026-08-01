@@ -2,9 +2,10 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { monthLabel } from "@/lib/months";
+import { BABY_POSSESSIVE, pageTitle } from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Search — OurManasvi" };
+export const metadata: Metadata = { title: pageTitle("Search") };
 
 export default async function SearchPage({
   searchParams,
@@ -66,7 +67,9 @@ export default async function SearchPage({
             {query ? <>Results for “{query}”</> : "Search"}
           </h1>
 
-          {!query && <p className="mt-3 text-ink-soft">Type something to search Manasvi&apos;s memories.</p>}
+          {!query && (
+            <p className="mt-3 text-ink-soft">Type something to search {BABY_POSSESSIVE} memories.</p>
+          )}
           {query && total === 0 && (
             <p className="mt-4 rounded-2xl bg-white/70 p-6 text-ink-soft ring-1 ring-lavender/40">
               Nothing found for “{query}”. Try another word.

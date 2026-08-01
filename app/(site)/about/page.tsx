@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { getBaby, getFeaturedMoments } from "@/lib/data";
 import { banner } from "@/lib/cld";
+import { BABY_NAME, pageTitle } from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "About — OurManasvi" };
+export const metadata: Metadata = { title: pageTitle("About") };
 
 function fmt(d?: string) {
   return d
@@ -21,7 +22,7 @@ export default async function AboutPage() {
         <div className="mx-auto max-w-3xl text-center">
           <p className="font-hand text-3xl text-soft-pink-deep">our little world</p>
           <h1 className="mt-1 font-display text-4xl font-semibold text-ink sm:text-5xl">
-            About {baby?.name ?? "Manasvi"}
+            About {baby?.name ?? BABY_NAME}
           </h1>
         </div>
 
@@ -31,7 +32,7 @@ export default async function AboutPage() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={banner(photo)}
-                alt={baby?.name ?? "Manasvi"}
+                alt={baby?.name ?? BABY_NAME}
                 className="aspect-[4/3] w-full object-cover"
               />
             </div>
@@ -42,7 +43,7 @@ export default async function AboutPage() {
             </p>
             <p className="mt-5 leading-relaxed text-ink-soft">
               This is a little book of love for{" "}
-              <span className="font-semibold text-ink">{baby?.name ?? "Manasvi"}</span> — a keepsake
+              <span className="font-semibold text-ink">{baby?.name ?? BABY_NAME}</span> — a keepsake
               of the very first year, gathered month by month. Every giggle, first step, and tiny
               milestone lives here, so we can revisit these fleeting days forever.
             </p>
@@ -58,7 +59,7 @@ export default async function AboutPage() {
         </div>
 
         <p className="mx-auto mt-14 max-w-xl text-center font-hand text-2xl text-soft-pink-deep">
-          Made with endless love, for our Manasvi 💕
+          Made with endless love, for our {baby?.name ?? BABY_NAME} 💕
         </p>
       </section>
     </main>

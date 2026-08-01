@@ -7,6 +7,7 @@ import { cld } from "@/lib/cld";
 import { claimAudio, releaseAudio } from "@/lib/audio-bus";
 import { monthLabel } from "@/lib/months";
 import type { StorySlide } from "@/lib/data";
+import { BABY_NAME } from "@/lib/site-config";
 
 const SLIDE_MS = 3800;
 
@@ -23,7 +24,7 @@ const SPRING = { type: "spring" as const, stiffness: 130, damping: 17 };
 export default function JourneyStory({
   slides,
   audioUrl,
-  babyName = "Manasvi",
+  babyName = BABY_NAME,
 }: {
   slides: StorySlide[];
   audioUrl?: string;

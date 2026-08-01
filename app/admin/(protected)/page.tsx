@@ -12,6 +12,7 @@ import {
 } from "@/app/admin/actions";
 import ImagePicker from "@/components/admin/ImagePicker";
 import AudioPicker from "@/components/admin/AudioPicker";
+import { BABY_POSSESSIVE } from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +29,7 @@ export default async function AdminDashboard() {
 
   return (
     <div>
-      <h1 className="font-display text-3xl font-semibold text-ink">Manasvi&apos;s Journey</h1>
+      <h1 className="font-display text-3xl font-semibold text-ink">{BABY_POSSESSIVE} Journey</h1>
       <p className="mt-2 text-ink-soft">
         Pick a month to add photos, videos, memories and milestones.
       </p>

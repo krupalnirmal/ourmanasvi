@@ -4,6 +4,7 @@ import { Poppins, Playfair_Display, Caveat } from "next/font/google";
 import "./globals.css";
 import PWARegister from "@/components/PWARegister";
 import TopProgress from "@/components/TopProgress";
+import { BABY_NAME, BABY_POSSESSIVE, SITE_DESCRIPTION, pageTitle } from "@/lib/site-config";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -27,20 +28,19 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: "OurManasvi — A Year of Firsts",
-  description:
-    "A premium digital memory book celebrating Manasvi's first year, from birth to first birthday.",
-  keywords: ["baby memory book", "first year", "Manasvi", "milestones", "timeline"],
+  title: pageTitle(),
+  description: SITE_DESCRIPTION,
+  keywords: ["baby memory book", "first year", BABY_NAME, "milestones", "timeline"],
   openGraph: {
-    title: "OurManasvi — A Year of Firsts",
-    description: "Manasvi's first year, told month by month.",
+    title: pageTitle(),
+    description: `${BABY_POSSESSIVE} first year, told month by month.`,
     type: "website",
   },
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Manasvi",
+    title: BABY_NAME,
   },
   icons: {
     icon: "/icons/icon-192.png",

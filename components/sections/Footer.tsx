@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BABY_NAME } from "@/lib/site-config";
 
 const LINKS = [
   { href: "/journey", label: "Journey" },
@@ -15,7 +16,7 @@ const LINKS = [
 export default function Footer() {
   return (
     <footer className="bg-lavender/30 px-6 py-14 text-center">
-      <p className="font-hand text-3xl text-soft-pink-deep">Made with love, for Manasvi</p>
+      <p className="font-hand text-3xl text-soft-pink-deep">Made with love, for {BABY_NAME}</p>
 
       <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
         {LINKS.map((l) => (

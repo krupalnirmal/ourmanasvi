@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { thumb } from "@/lib/cld";
 import type { BabyInfo } from "@/lib/data";
+import { BABY_NAME } from "@/lib/site-config";
 
 function fmt(d?: string) {
   if (!d) return "";
@@ -45,7 +46,7 @@ export default function ProfileCard({
         <div>
           <p className="text-sm text-ink-soft">Hello, I&apos;m</p>
           <p className="font-hand text-4xl font-bold leading-tight text-soft-pink-deep">
-            {baby?.name ?? "Manasvi"}
+            {baby?.name ?? BABY_NAME}
             <span className="ml-1 align-middle text-lg" aria-hidden>
               ♥
             </span>

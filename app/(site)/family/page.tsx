@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { getFamily } from "@/lib/data";
 import { thumb } from "@/lib/cld";
+import { pageTitle } from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Family — OurManasvi" };
+export const metadata: Metadata = { title: pageTitle("Family") };
 
 export default async function FamilyPage() {
   const family = await getFamily();

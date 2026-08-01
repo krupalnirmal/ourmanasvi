@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { getFavouritePhotos } from "@/lib/data";
 import Gallery from "@/components/ui/Gallery";
+import { pageTitle } from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Favorites — OurManasvi" };
+export const metadata: Metadata = { title: pageTitle("Favorites") };
 
 export default async function FavoritesPage() {
   const photos = await getFavouritePhotos();

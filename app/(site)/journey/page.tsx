@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Timeline from "@/components/sections/Timeline";
 import { getTimeline } from "@/lib/data";
+import { BABY_POSSESSIVE, pageTitle } from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
-  title: "The Journey — OurManasvi",
-  description: "Manasvi's first year, month by month.",
+  title: pageTitle("The Journey"),
+  description: `${BABY_POSSESSIVE} first year, month by month.`,
 };
 
 export default async function JourneyPage() {

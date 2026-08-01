@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { getAllPhotos } from "@/lib/data";
 import Gallery from "@/components/ui/Gallery";
+import { BABY_POSSESSIVE, pageTitle } from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Gallery — OurManasvi" };
+export const metadata: Metadata = { title: pageTitle("Gallery") };
 
 export default async function GalleryPage() {
   const photos = await getAllPhotos();
@@ -16,7 +17,7 @@ export default async function GalleryPage() {
           <h1 className="mt-1 font-display text-4xl font-semibold text-ink sm:text-5xl">Gallery</h1>
           <p className="mx-auto mt-3 max-w-lg text-ink-soft">
             {photos.length > 0
-              ? `All ${photos.length} photos from Manasvi's first year.`
+              ? `All ${photos.length} photos from ${BABY_POSSESSIVE} first year.`
               : "Photos are coming soon 💕"}
           </p>
         </div>

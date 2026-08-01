@@ -1,11 +1,11 @@
 import type { MetadataRoute } from "next";
+import { BABY_NAME, SITE_DESCRIPTION, pageTitle } from "@/lib/site-config";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "OurManasvi — A Year of Firsts",
-    short_name: "Manasvi",
-    description:
-      "A premium digital memory book celebrating Manasvi's first year, from birth to first birthday.",
+    name: pageTitle(),
+    short_name: BABY_NAME,
+    description: SITE_DESCRIPTION,
     start_url: "/",
     scope: "/",
     display: "standalone",

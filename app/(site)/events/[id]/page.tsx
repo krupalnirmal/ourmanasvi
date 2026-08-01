@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getEventDetail } from "@/lib/data";
 import MediaGrid from "@/components/ui/MediaGrid";
+import { pageTitle } from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const ev = await getEventDetail(id);
-  return { title: ev ? `${ev.name} — OurManasvi` : "Event — OurManasvi" };
+  return { title: pageTitle(ev ? ev.name : "Event") };
 }
 
 export default async function EventPage({

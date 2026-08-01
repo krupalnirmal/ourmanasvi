@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { BABY_NAME, FAMILY_NAME, SITE_NAME, pageTitle } from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Contact — OurManasvi" };
+export const metadata: Metadata = { title: pageTitle("Contact") };
 
 export default function ContactPage() {
   return (
@@ -13,14 +14,14 @@ export default function ContactPage() {
             Get in Touch
           </h1>
           <p className="mt-5 leading-relaxed text-ink-soft">
-            OurManasvi is a little keepsake made with love for family and friends. Have a photo, a
-            memory, or a wish for Manasvi? We&apos;d love to hear from you.
+            {SITE_NAME} is a little keepsake made with love for family and friends. Have a photo, a
+            memory, or a wish for {BABY_NAME}? We&apos;d love to hear from you.
           </p>
 
           <div className="mt-10 rounded-3xl bg-white/80 p-8 shadow-sm ring-1 ring-lavender/40">
             <p className="font-hand text-2xl text-ink">With love,</p>
             <p className="mt-1 font-display text-xl font-semibold text-soft-pink-deep">
-              Manasvi&apos;s Family
+              {FAMILY_NAME}
             </p>
             <p className="mt-4 text-sm text-ink-soft">
               Share your wishes and memories with us whenever you visit. 💕

@@ -8,6 +8,7 @@ import Gallery from "@/components/ui/Gallery";
 import VideoPlayer from "@/components/ui/VideoPlayer";
 import MemoryCard from "@/components/ui/MemoryCard";
 import MilestoneCard from "@/components/ui/MilestoneCard";
+import { SITE_NAME, pageTitle } from "@/lib/site-config";
 
 // Reflect admin edits / new uploads immediately.
 export const dynamic = "force-dynamic";
@@ -19,8 +20,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { monthNumber } = await params;
   const month = await getMonthView(Number(monthNumber));
-  if (!month) return { title: "OurManasvi" };
-  return { title: `${month.title} — OurManasvi`, description: month.intro };
+  if (!month) return { title: SITE_NAME };
+  return { title: pageTitle(month.title), description: month.intro };
 }
 
 export default async function MonthPage({

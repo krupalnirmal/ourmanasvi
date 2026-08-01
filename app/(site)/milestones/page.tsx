@@ -2,9 +2,10 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getAllMilestones } from "@/lib/data";
 import { monthLabel } from "@/lib/months";
+import { BABY_POSSESSIVE, pageTitle } from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Milestones — OurManasvi" };
+export const metadata: Metadata = { title: pageTitle("Milestones") };
 
 export default async function MilestonesPage() {
   const milestones = await getAllMilestones();
@@ -19,7 +20,7 @@ export default async function MilestonesPage() {
           </h1>
           <p className="mx-auto mt-3 max-w-lg text-ink-soft">
             {milestones.length > 0
-              ? "All the big little firsts of Manasvi's first year."
+              ? `All the big little firsts of ${BABY_POSSESSIVE} first year.`
               : "Milestones are coming soon 🏆"}
           </p>
         </div>

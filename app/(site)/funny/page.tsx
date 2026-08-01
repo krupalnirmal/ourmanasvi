@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { getFunMedia } from "@/lib/data";
 import MediaGrid from "@/components/ui/MediaGrid";
+import { pageTitle } from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Funny — OurManasvi" };
+export const metadata: Metadata = { title: pageTitle("Funny") };
 
 export default async function FunnyPage() {
   const media = await getFunMedia();

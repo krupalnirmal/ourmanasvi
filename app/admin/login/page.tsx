@@ -1,6 +1,7 @@
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
+import { BABY_POSSESSIVE } from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
 
@@ -33,7 +34,7 @@ export default async function LoginPage({
           Parents&apos; Login
         </h1>
         <p className="mt-2 text-center text-sm text-ink-soft">
-          Sign in to add memories to Manasvi&apos;s book.
+          Sign in to add memories to {BABY_POSSESSIVE} book.
         </p>
 
         {error && (

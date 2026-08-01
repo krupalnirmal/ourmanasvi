@@ -6,12 +6,23 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # OurManasvi
 
-A premium digital memory book for Manasvi's first year (birth → first birthday).
+A premium digital memory book for a baby's first year (birth → first birthday).
 Emotional, month-by-month storytelling. See `doc/` for the full product spec.
 
 ## Hard rule: everything must stay FREE
 Hosting, database, and media/uploads must all use free tiers only. Never add a
 paid service or a feature that requires leaving the free tier.
+
+## Hard rule: never hardcode whose book this is
+The same codebase is deployed once per baby. Names, dates and titles come from
+`lib/site-config.ts` (backed by `NEXT_PUBLIC_BABY_NAME`, `NEXT_PUBLIC_SITE_NAME`,
+`NEXT_PUBLIC_SITE_TAGLINE`, `NEXT_PUBLIC_FAMILY_NAME`) — never write a baby's name
+into a component, page title, or the `lib/journey-data.ts` fallback copy.
+Use `pageTitle("Gallery")` for metadata and `BABY_POSSESSIVE` for "…'s" phrasing.
+
+Where a real value exists in the DB (`baby.name`), prefer it and fall back to
+config: `baby?.name ?? BABY_NAME`. Each site also needs its own `AUTH_SECRET`,
+`ADMIN_PASSWORD` and `CLOUDINARY_FOLDER` — never reuse them across sites.
 
 ## Stack (all free)
 - Next.js 16 (App Router) + React 19 + TypeScript + Tailwind v4

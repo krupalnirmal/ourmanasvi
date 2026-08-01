@@ -1,6 +1,7 @@
 import { auth, signOut } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { SITE_NAME } from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,7 @@ export default async function ProtectedAdminLayout({
       <header className="border-b border-lavender/40 bg-white/70 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <Link href="/admin" className="font-display text-xl font-semibold text-ink">
-            OurManasvi <span className="text-soft-pink-deep">Admin</span>
+            {SITE_NAME} <span className="text-soft-pink-deep">Admin</span>
           </Link>
           <div className="flex items-center gap-4">
             <Link

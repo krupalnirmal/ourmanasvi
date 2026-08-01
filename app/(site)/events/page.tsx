@@ -2,9 +2,10 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getEvents } from "@/lib/data";
 import { thumb } from "@/lib/cld";
+import { pageTitle } from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Events — OurManasvi" };
+export const metadata: Metadata = { title: pageTitle("Events") };
 
 function fmt(d?: string) {
   return d
